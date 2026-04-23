@@ -1,0 +1,6 @@
+# Agent Instructions
+Este projeto segue regras modulares localizadas em:
+- Globais: ./RULES.md
+- Backend: ./.agents/rules/backend.md
+- Frontend: ./.agents/rules/frontend.md
+Sempre consulte esses arquivos antes de sugerir mudanças.
