@@ -1,0 +1,38 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.eslintcache
+
+# Backend
+backend/dist/
+backend/.env
+backend/.env.local
+backend/*.db
+backend/*.sqlite
+
+# Frontend
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Typescript
+*.tsbuildinfo
+
+# Local agent context
+.agents/
+.clauderules
+.claudesettings
