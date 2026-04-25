@@ -1,4 +1,4 @@
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, Navigate, NavLink } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { LogOut } from "lucide-react";
 import { authApi } from "../../api/auth/AuthApi";
@@ -15,6 +15,13 @@ export const PrivateLayout = () => {
     authApi.logout();
   };
 
+  const navLinkClass = ({ isActive }: { isActive: boolean }) => 
+    `px-4 py-2 rounded-lg font-medium text-sm transition-colors block ${
+      isActive 
+        ? "bg-indigo-50 text-indigo-700" 
+        : "text-slate-600 hover:bg-slate-50"
+    }`;
+
   return (
     <div className="min-h-screen bg-slate-50 flex font-sans">
       <Toaster position="top-right" />
@@ -25,12 +32,12 @@ export const PrivateLayout = () => {
           <span className="font-bold text-lg text-slate-800 tracking-tight">Painel Admin</span>
         </div>
         <nav className="flex-1 p-4 space-y-2">
-          <div className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg font-medium text-sm">
+          <NavLink to="/dashboard" className={navLinkClass}>
             Dashboard
-          </div>
-          <div className="px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-lg font-medium text-sm cursor-pointer transition-colors">
+          </NavLink>
+          <NavLink to="/eventos" className={navLinkClass}>
             Eventos
-          </div>
+          </NavLink>
           <div className="px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-lg font-medium text-sm cursor-pointer transition-colors">
             Configurações
           </div>
