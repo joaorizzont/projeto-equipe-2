@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, Ticket, Settings } from 'lucide-react';
+import { LayoutDashboard, Users, Ticket, Settings, Activity } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const Home = () => {
@@ -6,6 +6,22 @@ export const Home = () => {
         <div className="min-h-screen bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 text-slate-900 selection:bg-indigo-500/30 relative overflow-hidden">
             {/* Background Effects */}
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-indigo-200/40 via-transparent to-transparent pointer-events-none" />
+
+            {/* Navbar */}
+            <header className="relative z-20 w-full max-w-6xl mx-auto px-8 py-6 flex items-center justify-between">
+                <div className="font-bold text-xl text-slate-800 tracking-tight flex items-center gap-2">
+                    <Activity className="text-indigo-600" />
+                    Plataforma
+                </div>
+                <div className="flex items-center gap-6">
+                    <Link to="/login" className="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors">
+                        Entrar
+                    </Link>
+                    <Link to="/register" className="px-5 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
+                        Criar Conta livre
+                    </Link>
+                </div>
+            </header>
 
             <main className="max-w-6xl mx-auto pt-24 px-8 pb-32 relative z-10">
                 <div className="space-y-6">
@@ -21,7 +37,7 @@ export const Home = () => {
                     </h1>
                     
                     <p className="text-slate-600 text-lg max-w-2xl leading-relaxed">
-                        PÁTIO é a plataforma definitiva para gestão de ingressos e eventos. 
+                        A plataforma definitiva para gestão de ingressos e eventos. 
                         Segurança, escalabilidade e design premium em um só lugar.
                     </p>
                     
@@ -29,9 +45,9 @@ export const Home = () => {
                         <Link to="/register" className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 transition-all rounded-xl font-bold text-sm text-white shadow-[0_4px_14px_0_rgb(79,70,229,0.39)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.23)] hover:-translate-y-0.5">
                             Começar Agora
                         </Link>
-                        <button className="px-8 py-3 bg-white hover:bg-slate-50 transition-all rounded-xl font-bold text-sm text-slate-700 border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5">
-                            Ver Documentação
-                        </button>
+                        <Link to="/login" className="px-8 py-3 bg-white hover:bg-slate-50 transition-all rounded-xl font-bold text-sm text-slate-700 border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5">
+                            Acessar Conta
+                        </Link>
                     </div>
                 </div>
 

@@ -3,6 +3,7 @@ import { PublicLayout } from "./layouts/PublicLayout/PublicLayout";
 import { PrivateLayout } from "./layouts/PrivateLayout/PrivateLayout";
 import { Home } from "./pages/Home/Home";
 import { Register } from "./pages/Register/Register";
+import { Login } from "./pages/Login/Login";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
         {/* Rotas Públicas */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>
 

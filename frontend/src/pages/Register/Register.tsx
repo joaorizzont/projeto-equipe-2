@@ -75,7 +75,7 @@ export const Register = () => {
             <h1 className="text-3xl font-bold text-slate-900 tracking-tight">
               Criar Conta
             </h1>
-            <p className="text-slate-500 mt-2 text-sm">Junte-se à plataforma PÁTIO</p>
+            <p className="text-slate-500 mt-2 text-sm">Junte-se à plataforma</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -190,7 +190,7 @@ export const Register = () => {
           <div className="mt-8 text-center border-t border-slate-100 pt-6">
             <p className="text-sm text-slate-500">
               Já tem uma conta?{' '}
-              <Link to="/" className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
+              <Link to="/login" className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
                 Faça login
               </Link>
             </p>
