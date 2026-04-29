@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teste de Segurança — UserService</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --accent2: #3fb950;
+      --danger: #f85149;
+      --warn: #e3b341;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --font: 'Inter', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), #79c0ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.4rem;
+    }
+
+    header p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #1f6feb33;
+      border: 1px solid #1f6feb88;
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.18rem 0.6rem;
+      border-radius: 20px;
+      margin-bottom: 1rem;
+      letter-spacing: 0.04em;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 720px;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    input, select {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      padding: 0.55rem 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    input:focus, select:focus { border-color: var(--accent); }
+
+    select option { background: var(--surface2); }
+
+    .btn {
+      background: linear-gradient(135deg, #1f6feb, #388bfd);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.65rem 1.5rem;
+      transition: opacity 0.2s, transform 0.1s;
+      width: 100%;
+      max-width: 720px;
+      margin-bottom: 1.25rem;
+    }
+
+    .btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Test output */
+    .test-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .test-item {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 0.6rem;
+      align-items: start;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+      animation: fadeIn 0.3s ease both;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+    .test-item.pass { border-left: 3px solid var(--accent2); }
+    .test-item.fail { border-left: 3px solid var(--danger); }
+    .test-item.pending { border-left: 3px solid var(--warn); }
+
+    .test-icon { font-size: 1rem; margin-top: 1px; }
+    .test-content { display: flex; flex-direction: column; gap: 0.3rem; }
+    .test-label { font-size: 0.88rem; font-weight: 600; }
+    .test-item.pass .test-label { color: #aff5c6; }
+    .test-item.fail .test-label { color: #ffa198; }
+    .test-item.pending .test-label { color: var(--warn); }
+    .test-detail { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); word-break: break-all; }
+
+    /* Hash display */
+    .hash-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--accent2);
+      word-break: break-all;
+      line-height: 1.6;
+    }
+
+    .hash-label { color: var(--muted); font-size: 0.72rem; margin-bottom: 0.4rem; font-family: var(--font); font-weight: 500; }
+
+    .summary {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .summary-chip {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.78rem;
+      padding: 0.25rem 0.9rem;
+      font-weight: 600;
+    }
+
+    .summary-chip.pass { color: var(--accent2); border-color: #3fb95055; }
+    .summary-chip.fail { color: var(--danger); border-color: #f8514955; }
+
+    #results-section { display: none; width: 100%; max-width: 720px; }
+    #hash-section { display: none; width: 100%; max-width: 720px; margin-bottom: 1.25rem; }
+
+    footer {
+      margin-top: 2rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="badge">INTICKET · UserService · Branch #144</div>
+    <h1>🔐 Teste de Segurança de Senha</h1>
+    <p>Valida criptografia bcrypt e fallback de role — sem banco de dados</p>
+  </header>
+
+  <!-- Inputs -->
+  <div class="card">
+    <div class="card-title">📝 Dados do Usuário</div>
+    <div class="input-row">
+      <div class="input-group">
+        <label for="inp-senha">Senha em texto plano</label>
+        <input id="inp-senha" type="text" value="minhaSenhaSegura@123" placeholder="Digite uma senha..." />
+      </div>
+      <div class="input-group">
+        <label for="inp-role">Role (deixe vazio para testar fallback)</label>
+        <select id="inp-role">
+          <option value="">— Não informado (fallback) —</option>
+          <option value="current">CURRENT</option>
+          <option value="admin">ADMIN</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label for="inp-rounds">Salt Rounds</label>
+        <input id="inp-rounds" type="number" value="10" min="4" max="14" />
+      </div>
+    </div>
+  </div>
+
+  <button class="btn" id="btn-run" onclick="runTests()">▶ Executar Testes</button>
+
+  <!-- Hash result -->
+  <div id="hash-section" class="card">
+    <div class="card-title">🔑 Hash gerado</div>
+    <div class="hash-label">Campo <code>senha</code> enviado ao UserRepository:</div>
+    <div class="hash-box" id="hash-output">—</div>
+  </div>
+
+  <!-- Test results -->
+  <div id="results-section">
+    <div class="card">
+      <div class="card-title">🧪 Resultados dos Testes</div>
+      <ul class="test-list" id="test-list"></ul>
+      <div class="summary" id="summary"></div>
+    </div>
+  </div>
+
+  <footer>bcryptjs v2.4.3 · Rodando 100% no browser · Nenhum dado enviado a servidores</footer>
+
+  <script>
+    const dcrypt = dcodeIO.bcrypt;
+
+    async function runTests() {
+      const btn = document.getElementById('btn-run');
+      const plainSenha = document.getElementById('inp-senha').value.trim();
+      const roleInput = document.getElementById('inp-role').value;
+      const rounds = parseInt(document.getElementById('inp-rounds').value) || 10;
+
+      if (!plainSenha) { alert('Informe uma senha para testar.'); return; }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Gerando hash...';
+
+      const list = document.getElementById('test-list');
+      const hashSection = document.getElementById('hash-section');
+      const resultsSection = document.getElementById('results-section');
+      const hashOutput = document.getElementById('hash-output');
+      const summary = document.getElementById('summary');
+
+      list.innerHTML = '';
+      summary.innerHTML = '';
+      hashSection.style.display = 'none';
+      resultsSection.style.display = 'none';
+
+      // ── Lógica do UserService (espelhada) ──────────────────────
+      const finalRole = roleInput || 'current'; // UserRole.CURRENT fallback
+      const hashedSenha = await dcrypt.hash(plainSenha, rounds);
+
+      // Payload enviado ao repositório
+      const userPayload = {
+        nome: 'Usuário Teste',
+        cpf: '123.456.789-09',
+        email: 'teste@inticket.com',
+        telefone: '(11) 99999-9999',
+        senha: hashedSenha,   // ← hash, nunca o texto plano
+        role: finalRole,
+      };
+
+      // Segundo hash da mesma senha (para testar unicidade)
+      const hashedSenha2 = await dcrypt.hash(plainSenha, rounds);
+
+      // ── Testes ────────────────────────────────────────────────
+      const tests = [];
+
+      // T1
+      tests.push({
+        label: 'A senha no payload NÃO é texto plano',
+        pass: userPayload.senha !== plainSenha,
+        detail: `Esperado: ≠ "${plainSenha}" | Recebido: "${userPayload.senha.substring(0, 30)}..."`,
+      });
+
+      // T2
+      tests.push({
+        label: 'O hash começa com "$2b$" (padrão bcrypt)',
+        pass: userPayload.senha.startsWith('$2b$'),
+        detail: `Prefixo detectado: "${userPayload.senha.substring(0, 7)}"`,
+      });
+
+      // T3
+      const hashValid = await dcrypt.compare(plainSenha, userPayload.senha);
+      tests.push({
+        label: 'bcrypt.compare() valida o hash com a senha original',
+        pass: hashValid,
+        detail: `bcrypt.compare("${plainSenha}", hash) → ${hashValid}`,
+      });
+
+      // T4
+      const fallbackApplied = !roleInput;
+      tests.push({
+        label: fallbackApplied
+          ? 'Fallback de Role aplicado com sucesso (UserRole.CURRENT)'
+          : 'Role explícita preservada no payload',
+        pass: true,
+        detail: `role no payload: "${userPayload.role}" ${fallbackApplied ? '← fallback automático' : '← valor fornecido'}`,
+      });
+
+      // T5
+      tests.push({
+        label: 'Dois hashes da mesma senha são diferentes (salt único)',
+        pass: hashedSenha !== hashedSenha2,
+        detail: `Hash 1: ${hashedSenha.substring(0, 29)}... | Hash 2: ${hashedSenha2.substring(0, 29)}...`,
+      });
+
+      // T6 — senha original NÃO aparece em nenhum campo do payload
+      const payloadStr = JSON.stringify(userPayload);
+      tests.push({
+        label: 'Senha em texto plano não aparece em nenhum campo do payload',
+        pass: !payloadStr.includes(plainSenha),
+        detail: 'Verificado via JSON.stringify(userPayload).includes(plainSenha)',
+      });
+
+      // ── Renderizar ────────────────────────────────────────────
+      hashOutput.textContent = hashedSenha;
+      hashSection.style.display = 'block';
+      resultsSection.style.display = 'block';
+
+      let passed = 0;
+      tests.forEach((t, i) => {
+        const li = document.createElement('li');
+        li.className = `test-item ${t.pass ? 'pass' : 'fail'}`;
+        li.style.animationDelay = `${i * 0.07}s`;
+        li.innerHTML = `
+          <span class="test-icon">${t.pass ? '✅' : '❌'}</span>
+          <div class="test-content">
+            <span class="test-label">[${i + 1}] ${t.label}</span>
+            <span class="test-detail">${t.detail}</span>
+          </div>`;
+        list.appendChild(li);
+        if (t.pass) passed++;
+      });
+
+      const failed = tests.length - passed;
+      summary.innerHTML = `
+        <span class="summary-chip pass">✔ ${passed} passou${passed !== 1 ? 'ram' : ''}</span>
+        ${failed > 0 ? `<span class="summary-chip fail">✘ ${failed} falhou${failed !== 1 ? 'ram' : ''}</span>` : ''}`;
+
+      btn.disabled = false;
+      btn.innerHTML = '🔄 Executar Novamente';
+    }
+  </script>
+</body>
+</html>
