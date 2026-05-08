@@ -1,0 +1,5 @@
+export const Spinner = () => {
+    return (
+        <div className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-blue-600"></div>
+    );
+};

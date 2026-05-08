@@ -1,4 +1,5 @@
 import { LayoutDashboard, Users, Ticket, Settings } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export const Home = () => {
     return (
@@ -22,9 +23,9 @@ export const Home = () => {
                     </p>
                     
                     <div className="flex gap-4 pt-4">
-                        <button className="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 transition-all rounded-lg font-bold text-sm shadow-lg shadow-indigo-500/20 active:scale-95">
+                        <Link to="/signup" className="px-8 py-3 bg-indigo-600 hover:bg-indigo-500 transition-all rounded-lg font-bold text-sm shadow-lg shadow-indigo-500/20 active:scale-95 inline-block">
                             Começar Agora
-                        </button>
+                        </Link>
                         <button className="px-8 py-3 bg-slate-800 hover:bg-slate-700 transition-all rounded-lg font-bold text-sm border border-slate-700 active:scale-95">
                             Ver Documentação
                         </button>

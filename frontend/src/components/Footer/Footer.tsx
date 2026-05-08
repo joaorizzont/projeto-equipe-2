@@ -13,12 +13,13 @@ export const Footer = () => {
             } else {
                 setStatus('INACTIVE');
             }
-        } catch (error) {
+        } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
             setStatus('INACTIVE');
         }
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         checkStatus();
         const interval = setInterval(checkStatus, 10000); // Polling a cada 10s
         return () => clearInterval(interval);
