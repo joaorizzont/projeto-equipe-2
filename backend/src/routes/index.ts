@@ -10,5 +10,7 @@ router.get("/health", healthController.check);
 
 // Public route — no JWT middleware
 router.post("/register", authController.register);
+router.post("/login", authController.login);
+router.post("/refresh", authController.refresh);
 
 export default router;
