@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
 import { User } from "../models/User";
+import { Event } from "../models/Event";
 
 dotenv.config();
 
@@ -14,7 +15,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_NAME || "inticket",
     synchronize: true, // Apenas para desenvolvimento
     logging: false,
-    entities: [User],
+    entities: [User, Event],
     migrations: [],
     subscribers: [],
 });
