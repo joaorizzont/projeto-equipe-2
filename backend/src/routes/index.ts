@@ -8,7 +8,8 @@ const authController = new AuthController();
 
 router.get("/health", healthController.check);
 
-// Public route — no JWT middleware
+// Public routes — no JWT middleware
 router.post("/register", authController.register);
+router.post("/login", authController.login);
 
 export default router;
