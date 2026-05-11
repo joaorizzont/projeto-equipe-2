@@ -20,4 +20,8 @@ export class EventRepository {
     const event = this.repository.create(eventData);
     return this.repository.save(event);
   }
+
+  public async softDelete(id: string): Promise<void> {
+    await this.repository.softDelete(id);
+  }
 }
