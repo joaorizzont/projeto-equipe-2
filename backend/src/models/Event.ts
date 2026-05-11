@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('events')
 export class Event {
@@ -8,12 +8,18 @@ export class Event {
   @Column({ type: 'varchar', length: 255 })
   title!: string;
 
-  @Column({ type: 'int', name: 'default_stock' })
+  @Column({ type: 'int', default: 0 })
   defaultStock!: number;
 
-  @Column({ type: 'datetime', name: 'valid_at' })
+  @Column({ type: 'timestamp' })
   validAt!: Date;
 
-  @Column({ type: 'text', name: 'image_url', nullable: true })
+  @Column({ type: 'varchar', length: 500, nullable: true })
   imageUrl!: string | null;
+
+  @CreateDateColumn()
+  createdAt!: Date;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
 }

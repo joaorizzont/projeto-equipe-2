@@ -33,7 +33,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction): vo
     }
 
     const payload = decoded as { id: string; role: UserRole };
-    
+
     req.user = {
       id: payload.id,
       role: payload.role
