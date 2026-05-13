@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Ticket } from './Ticket';
 
 @Entity('events')
 export class Event {
@@ -16,6 +17,9 @@ export class Event {
 
   @Column({ type: 'varchar', length: 500, nullable: true })
   imageUrl!: string | null;
+
+  @OneToMany(() => Ticket, (ticket) => ticket.event)
+  tickets!: Ticket[];
 
   @CreateDateColumn()
   createdAt!: Date;
