@@ -13,5 +13,6 @@ router.use(verifyRole([UserRole.ADMIN]));
 router.get("/events", eventController.findAll);
 router.post("/events", eventController.create);
 router.put("/events/:id", eventController.update);
+router.delete("/events/:id", eventController.delete);
 
 export default router;

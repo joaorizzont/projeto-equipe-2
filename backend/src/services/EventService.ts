@@ -67,4 +67,16 @@ export class EventService {
       validAt: validAtDate,
     });
   }
+
+  public async delete(id: string): Promise<void> {
+    const event = await this.eventRepository.findById(id);
+
+    if (!event) {
+      const error = new Error("Evento não encontrado.");
+      (error as any).statusCode = 404;
+      throw error;
+    }
+
+    await this.eventRepository.softDelete(id);
+  }
 }
