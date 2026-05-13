@@ -27,4 +27,9 @@ export class UserRepository {
     const user = this.repository.create(userData);
     return this.repository.save(user);
   }
+
+  public async updateProfile(id: string, data: { nome?: string; telefone?: string }): Promise<User> {
+    await this.repository.update(id, data);
+    return this.repository.findOneOrFail({ where: { id } });
+  }
 }
