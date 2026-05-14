@@ -11,6 +11,7 @@ const authController = new AuthController();
 router.get("/health", healthController.check);
 
 import adminRoutes from "./admin.routes";
+import userRoutes from "./user.routes";
 
 // Public route — no JWT middleware
 router.post("/register", authController.register);
@@ -23,5 +24,6 @@ router.get("/private-admin", verifyToken, verifyRole([UserRole.ADMIN]), (req, re
 });
 
 router.use("/admin", adminRoutes);
+router.use("/", userRoutes);
 
 export default router;
