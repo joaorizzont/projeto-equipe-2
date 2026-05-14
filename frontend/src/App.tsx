@@ -1,13 +1,7 @@
-import { Home } from './pages/Home/Home'
-import { Footer } from './components/Footer/Footer'
+import { AppRoutes } from './routes/AppRoutes'
 
 function App() {
-  return (
-    <>
-      <Home />
-      <Footer />
-    </>
-  )
+  return <AppRoutes />
 }
 
 export default App
