@@ -4,12 +4,8 @@ import { UserRepository } from "../repositories/UserRepository";
 export class UserService {
   private userRepository = new UserRepository();
 
-  public async findAll(): Promise<User[]> {
-    // Retorna todos os usuários usando os métodos disponíveis ou instanciando um repository.
-    // Como findAll não existe no UserRepository customizado, e o contexto diz que UserService possui findAll(),
-    // mas a regra é não acessar TypeORM diretamente aqui, vou usar um método fictício ou apenas implementar updateRole.
-    // O mais seguro é assumir que eu só preciso implementar o updateRole como pedido, ou eu adiciono findAll() também se necessário.
-    throw new Error("Method not implemented.");
+  public async findAll(): Promise<Omit<User, "senha">[]> {
+    return this.userRepository.findAll();
   }
 
   public async updateRole(

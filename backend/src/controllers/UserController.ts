@@ -6,8 +6,14 @@ export class UserController {
   private userService = new UserService();
 
   public findAll = async (req: Request, res: Response): Promise<Response> => {
-    // Implementação mock
-    return res.status(200).json([]);
+    try {
+      const users = await this.userService.findAll();
+      return res.status(200).json(users);
+    } catch (error: any) {
+      const statusCode = error.statusCode || 500;
+      const message = statusCode === 500 ? "Erro interno do servidor." : error.message;
+      return res.status(statusCode).json({ message });
+    }
   };
 
   public updateRole = async (req: Request, res: Response): Promise<Response> => {
