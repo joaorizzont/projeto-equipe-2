@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Ticket } from './Ticket';
 
 export enum UserRole {
   CURRENT = 'current',
@@ -27,6 +28,9 @@ export class User {
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.CURRENT })
   role!: UserRole;
+
+  @OneToMany(() => Ticket, (ticket) => ticket.user)
+  tickets!: Ticket[];
 
   @CreateDateColumn()
   createdAt!: Date;
