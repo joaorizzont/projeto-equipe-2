@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Ticket, Search } from 'lucide-react';
 import type { TicketData } from '../../components/DigitalTicket/DigitalTicket';

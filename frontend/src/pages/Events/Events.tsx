@@ -1,52 +1,75 @@
-import { Plus } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Plus, Loader2, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { EventCard } from '../../components/EventCard/EventCard';
 import type { EventData } from '../../components/EventCard/EventCard';
-
-const mockEvents: EventData[] = [
-  {
-    id: '1',
-    title: 'Conferência Nacional de Tecnologia 2026',
-    date: '15 de Agosto, 2026',
-    time: '09:00 - 18:00',
-    location: 'Centro de Convenções, São Paulo',
-    status: 'disponivel',
-    capacity: 500,
-    registered: 342
-  },
-  {
-    id: '2',
-    title: 'Workshop Premium: Liderança e Inovação',
-    date: '20 de Agosto, 2026',
-    time: '14:00 - 17:00',
-    location: 'Auditório Master, Rio de Janeiro',
-    status: 'esgotado',
-    capacity: 150,
-    registered: 150
-  },
-  {
-    id: '3',
-    title: 'Seminário Anual de Gestão Ágil',
-    date: '10 de Julho, 2026',
-    time: '08:30 - 12:30',
-    location: 'Teatro Central, Curitiba',
-    status: 'finalizado',
-    capacity: 300,
-    registered: 289
-  },
-  {
-    id: '4',
-    title: 'Bootcamp UI/UX Avançado',
-    date: '05 de Setembro, 2026',
-    time: '19:00 - 22:00',
-    location: 'Online (Zoom)',
-    status: 'disponivel',
-    capacity: 100,
-    registered: 45
-  }
-];
+import { eventsApi } from '../../api/events/EventsApi';
+import { toast } from 'react-hot-toast';
 
 export const Events = () => {
+  const [events, setEvents] = useState<EventData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      const apiEvents = await eventsApi.listAll();
+      
+      const mappedEvents: EventData[] = apiEvents.map(e => {
+        // Lógica de cálculo de status
+        const validAtDate = new Date(e.validAt);
+        let status: 'disponivel' | 'esgotado' | 'finalizado' = 'disponivel';
+        
+        if (validAtDate.getTime() < Date.now()) {
+          status = 'finalizado';
+        } else if (e.defaultStock === 0) {
+          status = 'esgotado';
+        }
+
+        // Lógica de cálculo de ocupação mockada igual à da branch backup
+        let hash = 0;
+        for (let i = 0; i < e.id.length; i++) {
+          hash = e.id.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const factor = Math.abs(hash % 100) / 100;
+        const maxStock = e.defaultStock;
+        const registered = Math.min(Math.round(maxStock * factor * 0.8), maxStock);
+
+        // Formatação amigável de data e hora
+        const dateStr = validAtDate.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+        const timeStart = validAtDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        let timeStr = timeStart;
+        if (e.endAt) {
+          const endAtDate = new Date(e.endAt);
+          const timeEnd = endAtDate.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          timeStr = `${timeStart} - ${timeEnd}`;
+        }
+
+        return {
+          id: e.id,
+          title: e.title,
+          date: dateStr,
+          time: timeStr,
+          location: e.location || 'Sem local definido',
+          status,
+          capacity: e.defaultStock,
+          registered,
+          imageUrl: e.imageUrl || undefined
+        };
+      });
+
+      setEvents(mappedEvents);
+    } catch (error) {
+      toast.error('Erro ao carregar eventos do servidor.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       
@@ -63,12 +86,30 @@ export const Events = () => {
         </Link>
       </div>
 
-      {/* Grid de Eventos */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 xl:gap-8 gap-6">
-        {mockEvents.map(event => (
-          <EventCard key={event.id} event={event} />
-        ))}
-      </div>
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <Loader2 className="animate-spin text-indigo-600 w-8 h-8" />
+        </div>
+      ) : events.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-slate-100 p-12 text-center text-slate-500 shadow-sm flex flex-col items-center justify-center space-y-4">
+          <Calendar className="text-slate-300 w-16 h-16" />
+          <div>
+            <h3 className="text-lg font-bold text-slate-700">Nenhum evento cadastrado</h3>
+            <p className="text-slate-400 text-sm mt-1">Clique em "Criar Novo Evento" para começar a divulgar suas atrações.</p>
+          </div>
+          <Link to="/eventos/novo" className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-all shadow-[0_4px_14px_rgba(79,70,229,0.2)]">
+            <Plus size={18} />
+            Criar Primeiro Evento
+          </Link>
+        </div>
+      ) : (
+        /* Grid de Eventos */
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 xl:gap-8 gap-6">
+          {events.map(event => (
+            <EventCard key={event.id} event={event} />
+          ))}
+        </div>
+      )}
 
     </div>
   );
