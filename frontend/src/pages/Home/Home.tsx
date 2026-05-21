@@ -18,7 +18,7 @@ export const Home = () => {
                         Entrar
                     </Link>
                     <Link to="/register" className="px-5 py-2 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
-                        Criar Conta livre
+                        Criar conta
                     </Link>
                 </div>
             </header>

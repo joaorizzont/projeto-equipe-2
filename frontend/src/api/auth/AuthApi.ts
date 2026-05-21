@@ -6,9 +6,10 @@ interface LoginCredentials {
 }
 
 interface LoginResponse {
-    token: string;
+    accessToken: string;
+    refreshToken: string;
     user: {
-        id: number;
+        id: string;
         nome: string;
         email: string;
         cpf: string;
@@ -25,10 +26,9 @@ class AuthApi extends BaseApi {
     public async login(credentials: LoginCredentials): Promise<LoginResponse> {
         const response = await this.post<LoginResponse>('/auth/login', credentials);
         
-        // Armazenar o token no localStorage
-        if (response && response.token) {
-            localStorage.setItem('@Patio:token', response.token);
-            // Também podemos armazenar alguns dados básicos do usuário se necessário
+        if (response && response.accessToken) {
+            localStorage.setItem('@Patio:token', response.accessToken);
+            localStorage.setItem('@Patio:refreshToken', response.refreshToken);
             localStorage.setItem('@Patio:user', JSON.stringify(response.user));
         }
 
@@ -37,6 +37,7 @@ class AuthApi extends BaseApi {
 
     public logout(): void {
         localStorage.removeItem('@Patio:token');
+        localStorage.removeItem('@Patio:refreshToken');
         localStorage.removeItem('@Patio:user');
         window.location.href = '/login';
     }
