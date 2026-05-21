@@ -24,4 +24,14 @@ export class EventRepository {
   public async softDelete(id: string): Promise<void> {
     await this.repository.softDelete(id);
   }
+
+  public async findAllPublic(): Promise<Event[]> {
+    const now = new Date();
+    return this.repository
+      .createQueryBuilder("event")
+      .where("event.validAt > :now", { now })
+      .andWhere("event.currentStock > 0")
+      .orderBy("event.validAt", "ASC")
+      .getMany();
+  }
 }

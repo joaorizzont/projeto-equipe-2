@@ -42,7 +42,7 @@ export const Home = () => {
                     </p>
                     
                     <div className="flex gap-4 pt-4">
-                        <Link to="/register" className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 transition-all rounded-xl font-bold text-sm text-white shadow-[0_4px_14px_0_rgb(79,70,229,0.39)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.23)] hover:-translate-y-0.5">
+                        <Link to="/eventos" className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 transition-all rounded-xl font-bold text-sm text-white shadow-[0_4px_14px_0_rgb(79,70,229,0.39)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.23)] hover:-translate-y-0.5">
                             Começar Agora
                         </Link>
                         <Link to="/login" className="px-8 py-3 bg-white hover:bg-slate-50 transition-all rounded-xl font-bold text-sm text-slate-700 border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5">

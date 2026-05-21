@@ -10,6 +10,7 @@ import { CreateEvent } from "./pages/Events/CreateEvent";
 import { EventDetail } from "./pages/Events/EventDetail";
 import { MyTickets } from "./pages/Tickets/MyTickets";
 import { TicketView } from "./pages/Tickets/TicketView";
+import { PublicEvents } from "./pages/PublicEvents/PublicEvents";
 
 function App() {
   return (
@@ -20,15 +21,16 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/eventos" element={<PublicEvents />} />
         </Route>
 
         {/* Rotas Privadas (Logadas) */}
         <Route element={<PrivateLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/eventos" element={<Events />} />
-          <Route path="/eventos/novo" element={<CreateEvent />} />
-          <Route path="/eventos/:id" element={<EventDetail />} />
-          <Route path="/eventos/:id/editar" element={<CreateEvent />} />
+          <Route path="/admin/eventos" element={<Events />} />
+          <Route path="/admin/eventos/novo" element={<CreateEvent />} />
+          <Route path="/admin/eventos/:id" element={<EventDetail />} />
+          <Route path="/admin/eventos/:id/editar" element={<CreateEvent />} />
           <Route path="/meus-ingressos" element={<MyTickets />} />
           <Route path="/ingresso/:id" element={<TicketView />} />
         </Route>

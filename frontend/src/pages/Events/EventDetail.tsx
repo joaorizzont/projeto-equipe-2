@@ -31,7 +31,7 @@ export const EventDetail = () => {
 
         } catch (error) {
             toast.error('Erro ao carregar detalhes do evento.');
-            navigate('/eventos');
+            navigate('/admin/eventos');
         } finally {
             setLoading(false);
         }
@@ -47,7 +47,7 @@ export const EventDetail = () => {
             try {
                 await eventsApi.deleteEvent(id);
                 toast.success("Evento excluído com sucesso.");
-                navigate('/eventos');
+                navigate('/admin/eventos');
             } catch (error) {
                 toast.error("Erro ao excluir o evento.");
             }
@@ -86,7 +86,7 @@ export const EventDetail = () => {
             {/* Header / Actions */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
                 <div className="flex items-center gap-4">
-                    <Link to="/eventos" className="p-2 bg-white rounded-full border border-slate-200 hover:bg-slate-50 transition-colors text-slate-500 hover:text-slate-700 shadow-sm">
+                    <Link to="/admin/eventos" className="p-2 bg-white rounded-full border border-slate-200 hover:bg-slate-50 transition-colors text-slate-500 hover:text-slate-700 shadow-sm">
                         <ArrowLeft size={20} />
                     </Link>
                     <div>
@@ -103,7 +103,7 @@ export const EventDetail = () => {
                         <Trash2 size={18} />
                     </button>
                     <Link 
-                        to={`/eventos/${event.id}/editar`} 
+                        to={`/admin/eventos/${event.id}/editar`} 
                         className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-[0_4px_14px_0_rgb(79,70,229,0.39)] transition-all"
                     >
                         <Edit3 size={18} />

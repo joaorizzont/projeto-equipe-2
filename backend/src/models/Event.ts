@@ -12,6 +12,9 @@ export class Event {
   @Column({ type: 'int', default: 0 })
   defaultStock!: number;
 
+  @Column({ type: 'int', default: 0 })
+  currentStock!: number;
+
   @Column({ type: 'timestamp' })
   validAt!: Date;
 

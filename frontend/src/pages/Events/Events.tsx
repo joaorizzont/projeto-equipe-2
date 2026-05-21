@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Plus, Loader2, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { EventCard } from '../../components/EventCard/EventCard';
+import { AdminEventCard } from '../../components/EventCard/AdminEventCard';
 import { eventsApi } from '../../api/events/EventsApi';
 import { toast } from 'react-hot-toast';
 import { EventsFilter } from '../../components/EventsFilter/EventsFilter';
@@ -115,7 +115,7 @@ export const Events = () => {
           <p className="text-slate-500 text-sm mt-1">Gerencie, acompanhe e crie novos eventos na plataforma.</p>
         </div>
         
-        <Link to="/eventos/novo" className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-[0_4px_14px_0_rgb(79,70,229,0.39)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.23)] hover:-translate-y-0.5 transition-all w-fit">
+        <Link to="/admin/eventos/novo" className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-[0_4px_14px_0_rgb(79,70,229,0.39)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.23)] hover:-translate-y-0.5 transition-all w-fit">
           <Plus size={18} />
           Criar Novo Evento
         </Link>
@@ -137,7 +137,7 @@ export const Events = () => {
             <h3 className="text-lg font-bold text-slate-700">Nenhum evento cadastrado</h3>
             <p className="text-slate-400 text-sm mt-1">Clique em "Criar Novo Evento" para começar a divulgar suas atrações.</p>
           </div>
-          <Link to="/eventos/novo" className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-all shadow-[0_4px_14px_rgba(79,70,229,0.2)]">
+          <Link to="/admin/eventos/novo" className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-all shadow-[0_4px_14px_rgba(79,70,229,0.2)]">
             <Plus size={18} />
             Criar Primeiro Evento
           </Link>
@@ -154,7 +154,7 @@ export const Events = () => {
         /* Grid de Eventos */
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 xl:gap-8 gap-6">
           {filteredEvents.map(event => (
-            <EventCard key={event.id} event={event} />
+            <AdminEventCard key={event.id} event={event} />
           ))}
         </div>
       )}
