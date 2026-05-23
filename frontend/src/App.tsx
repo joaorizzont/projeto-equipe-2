@@ -11,6 +11,7 @@ import { EventDetail } from "./pages/Events/EventDetail";
 import { MyTickets } from "./pages/Tickets/MyTickets";
 import { TicketView } from "./pages/Tickets/TicketView";
 import { PublicEvents } from "./pages/PublicEvents/PublicEvents";
+import { UsersAdmin } from "./pages/Admin/UsersAdmin";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/admin/eventos/:id/editar" element={<CreateEvent />} />
           <Route path="/meus-ingressos" element={<MyTickets />} />
           <Route path="/ingresso/:id" element={<TicketView />} />
+          <Route path="/admin/users" element={<UsersAdmin />} />
         </Route>
       </Routes>
     </BrowserRouter>
