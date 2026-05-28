@@ -1,20 +1,22 @@
+import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { LogoutButton } from '../components/LogoutButton/LogoutButton';
 
-export const PrivateLayout = () => {
+export const PrivateLayout: React.FC = () => {
   const token = localStorage.getItem('token');
 
   if (!token) {
-    return <Navigate to="/signin" replace />;
+    // Para fins de teste se o login não existir
+    return <Navigate to="/" replace />;
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-slate-200">
-        <h1 className="text-xl font-bold text-slate-800">InTicket</h1>
-        <LogoutButton />
+    <div className="min-h-screen bg-slate-50 flex flex-col">
+      <header className="bg-indigo-600 text-white p-4 shadow-md">
+        <div className="container mx-auto">
+          <h1 className="text-xl font-bold">InTicket - Admin Panel</h1>
+        </div>
       </header>
-      <main className="p-6">
+      <main className="container mx-auto p-4 flex-grow">
         <Outlet />
       </main>
     </div>

@@ -79,7 +79,7 @@ export abstract class BaseApi {
         return response.data;
     }
 
-    protected async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+    protected async post<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
         const response: AxiosResponse<T> = await this.axiosInstance.post(url, data, config);
         return response.data;
     }
