@@ -1,86 +1,81 @@
 import React from 'react';
-import { Calendar, MapPin, Ticket } from 'lucide-react';
+import { Calendar, Ticket } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 import type { PublicEventResponse } from '../../api/response-types/PublicEventResponse';
-import { useEventStatus } from './useEventStatus';
-import { EventStatusBadge } from './EventStatusBadge';
 
 interface EventCardProps {
-    event: PublicEventResponse;
+  event: PublicEventResponse;
 }
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
-    const { 
-        isExpired, 
-        isSoldOut, 
-        badgeLabel, 
-        badgeClassName, 
-        buttonLabel, 
-        isButtonDisabled 
-    } = useEventStatus(event);
+  // Format Date and Time using Intl.DateTimeFormat
+  const formattedDate = React.useMemo(() => {
+    try {
+      const date = new Date(event.validAt);
+      return new Intl.DateTimeFormat('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      }).format(date);
+    } catch (e) {
+      return '';
+    }
+  }, [event.validAt]);
 
-    const opacityClass = isExpired ? 'opacity-60' : isSoldOut ? 'opacity-70' : 'opacity-100';
+  const handleBuy = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toast.success(`Compra do ingresso para "${event.title}" realizada com sucesso!`);
+  };
 
-    return (
-        <div className={`group relative bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden transition-all duration-300 hover:border-indigo-500/50 hover:shadow-2xl hover:shadow-indigo-500/10 ${opacityClass}`}>
-            
-            {/* Badge de Status */}
-            {badgeLabel && (
-                <EventStatusBadge label={badgeLabel} className={badgeClassName} />
-            )}
+  return (
+    <div className="group bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(79,70,229,0.08)] hover:border-indigo-100 overflow-hidden transition-all duration-300 flex flex-col h-full">
+      {/* Event Image or Placeholder */}
+      <div className="h-48 w-full relative overflow-hidden bg-slate-100">
+        {event.imageUrl ? (
+          <img
+            src={event.imageUrl}
+            alt={event.title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-tr from-indigo-500/10 to-purple-500/10 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
+            <Calendar className="text-indigo-300 w-12 h-12" />
+          </div>
+        )}
 
-            {/* Imagem do Evento */}
-            <div className="relative h-48 w-full overflow-hidden">
-                {event.imageUrl ? (
-                    <img 
-                        src={event.imageUrl} 
-                        alt={event.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-                        <Ticket size={48} className="text-slate-700" />
-                    </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent" />
-            </div>
-
-            {/* Conteúdo do Card */}
-            <div className="p-6 space-y-4">
-                <h3 className="text-xl font-bold text-white line-clamp-1 group-hover:text-indigo-400 transition-colors">
-                    {event.title}
-                </h3>
-
-                <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-slate-400 text-sm">
-                        <Calendar size={16} className="text-indigo-500" />
-                        <span>
-                            {new Date(event.validAt).toLocaleDateString('pt-BR', {
-                                day: '2-digit',
-                                month: 'long',
-                                year: 'numeric'
-                            })}
-                        </span>
-                    </div>
-                    <div className="flex items-center gap-2 text-slate-400 text-sm">
-                        <MapPin size={16} className="text-indigo-500" />
-                        <span>Local do Evento</span>
-                    </div>
-                </div>
-
-                {/* Botão de Ação */}
-                <button
-                    disabled={isButtonDisabled}
-                    aria-disabled={isButtonDisabled}
-                    className={`w-full py-3 rounded-xl font-bold text-sm transition-all duration-300 flex items-center justify-center gap-2
-                        ${isButtonDisabled 
-                            ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700' 
-                            : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20 active:scale-95'
-                        }`}
-                >
-                    {!isButtonDisabled && <Ticket size={18} />}
-                    {buttonLabel}
-                </button>
-            </div>
+        {/* Floating badge for available tickets */}
+        <div className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shadow-sm backdrop-blur-md bg-white/90 border border-emerald-200 text-emerald-700">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          {event.currentStock} {event.currentStock === 1 ? 'vaga' : 'vagas'}
         </div>
-    );
+      </div>
+
+      {/* Content */}
+      <div className="p-6 flex flex-col flex-1">
+        <h3 className="font-bold text-lg text-slate-800 mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">
+          {event.title}
+        </h3>
+
+        {/* Date and Time */}
+        <div className="flex items-center text-sm text-slate-500 gap-2 mb-6">
+          <Calendar size={16} className="text-indigo-500" />
+          <span>{formattedDate}</span>
+        </div>
+
+        {/* Action Button */}
+        <div className="mt-auto pt-4 border-t border-slate-100">
+          <button
+            onClick={handleBuy}
+            className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-[0_4px_14px_0_rgb(79,70,229,0.3)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.2)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer"
+          >
+            <Ticket size={18} />
+            Comprar Ingresso
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };

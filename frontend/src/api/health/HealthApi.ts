@@ -7,8 +7,7 @@ interface HealthResponse {
 
 class HealthApi extends BaseApi {
     constructor() {
-        // Em desenvolvimento, o backend roda na porta 3000
-        super('http://localhost:3001');
+        super(import.meta.env.VITE_API_URL || 'http://localhost:3000');
     }
 
     public async checkHealth(): Promise<HealthResponse> {

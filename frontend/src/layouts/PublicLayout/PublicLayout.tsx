@@ -4,7 +4,7 @@ import { Toaster } from "react-hot-toast";
 
 export const PublicLayout = () => {
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
       <Toaster position="top-right" />
       <main className="flex-1">
         <Outlet />

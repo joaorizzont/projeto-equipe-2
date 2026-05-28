@@ -26,7 +26,7 @@ export const Footer = () => {
     }, []);
 
     return (
-        <footer className="fixed bottom-0 w-full bg-white/80 text-slate-600 p-4 border-t border-slate-200 flex justify-between items-center px-8 backdrop-blur-md z-50">
+        <footer className="w-full bg-white/80 text-slate-600 p-4 border-t border-slate-200 flex justify-between items-center px-8 backdrop-blur-md shrink-0">
             <div className="flex items-center gap-2">
                 <Activity size={18} className="text-indigo-600" />
                 <span className="font-semibold text-sm tracking-tight text-slate-800">Plataforma</span>

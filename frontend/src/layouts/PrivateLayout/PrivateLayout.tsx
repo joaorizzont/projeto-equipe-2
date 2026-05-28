@@ -47,7 +47,7 @@ export const PrivateLayout: React.FC = () => {
               <LayoutDashboard size={20} />
               <span>Dashboard</span>
             </NavLink>
-            <NavLink to="/eventos" className={navLinkClass}>
+            <NavLink to="/admin/eventos" className={navLinkClass}>
               <Calendar size={20} />
               <span>Meus Eventos (Admin)</span>
             </NavLink>

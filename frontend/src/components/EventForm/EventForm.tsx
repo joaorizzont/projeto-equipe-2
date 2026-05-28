@@ -152,7 +152,7 @@ export const EventForm: React.FC<EventFormProps> = ({ event: propEvent, onSucces
       setTimeout(() => {
         if (onSuccess) onSuccess();
         if (onClose) onClose();
-        navigate('/eventos');
+        navigate('/admin/eventos');
       }, 1500);
     } catch (err: any) {
       const apiErrorMessage = err?.response?.data?.message || 'Ocorreu um erro ao salvar o evento.';
@@ -167,7 +167,7 @@ export const EventForm: React.FC<EventFormProps> = ({ event: propEvent, onSucces
     if (onClose) {
       onClose();
     } else {
-      navigate('/eventos');
+      navigate('/admin/eventos');
     }
   };
 

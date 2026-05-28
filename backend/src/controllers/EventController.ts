@@ -74,4 +74,13 @@ export class EventController {
       return res.status(statusCode).json({ message });
     }
   };
+
+  public listPublic = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const events = await this.eventService.findAllPublic();
+      return res.status(200).json(events);
+    } catch (error: any) {
+      return res.status(500).json({ message: "Erro interno do servidor." });
+    }
+  };
 }

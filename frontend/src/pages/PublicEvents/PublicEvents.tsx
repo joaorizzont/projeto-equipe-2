@@ -1,90 +1,90 @@
 import React, { useState, useEffect } from 'react';
-import { PurchaseEventCard } from '../../components/EventCard/PurchaseEventCard';
+import { Ticket, Calendar } from 'lucide-react';
+import { publicEventsApi } from '../../api/events/PublicEventsApi';
 import type { PublicEventResponse } from '../../api/response-types/PublicEventResponse';
-import { Spinner } from '../../components/UI/Spinner';
+import { EventCard } from '../../components/EventCard/EventCard';
+import { Spinner } from '../../components/Spinner/Spinner';
+import { toast } from 'react-hot-toast';
 
 export const PublicEvents: React.FC = () => {
   const [events, setEvents] = useState<PublicEventResponse[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Mock fetching events for demonstration, as the public API might be missing
-  const fetchEvents = async () => {
-    setLoading(true);
-    try {
-      // In a real scenario, this would call an EventApi
-      // For now, we mock some data to show the EventCards and Checkout flow
-      const mockEvents: PublicEventResponse[] = [
-        {
-          id: '1',
-          title: 'Conferência Tech 2026',
-          defaultStock: 100,
-          currentStock: 45,
-          validAt: '2026-06-15T19:00:00Z',
-          imageUrl: 'https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?auto=format&fit=crop&q=80&w=1000',
-        },
-        {
-          id: '2',
-          title: 'Festival de Verão InTicket',
-          defaultStock: 500,
-          currentStock: 12,
-          validAt: '2026-07-20T14:00:00Z',
-          imageUrl: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=1000',
-        },
-        {
-          id: '3',
-          title: 'Workshop de Design UI/UX',
-          defaultStock: 50,
-          currentStock: 0,
-          validAt: '2026-05-30T10:00:00Z',
-          imageUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1000',
-        },
-      ];
-
-      setEvents(mockEvents);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        const data = await publicEventsApi.listAll();
+        setEvents(data);
+      } catch (error) {
+        toast.error('Erro ao carregar a lista de eventos.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchEvents();
   }, []);
 
-  const handlePurchaseSuccess = () => {
-    // Reload events to reflect new stock
-    fetchEvents();
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <Spinner size="lg" className="text-indigo-500" />
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-slate-950 text-white selection:bg-indigo-500/30 pb-20">
-      <main className="max-w-7xl mx-auto pt-16 px-8">
-        <div className="space-y-4 mb-12">
-          <h1 className="text-4xl md:text-6xl font-black tracking-tight">
-            Explore <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Eventos</span>
+    <div className="min-h-screen bg-slate-50/50 pb-20 animate-in fade-in duration-500">
+      {/* Hero Header Section */}
+      <div className="relative overflow-hidden bg-slate-900 text-white py-16 px-6 sm:px-12 md:py-24 rounded-b-[2.5rem] shadow-[0_10px_30px_rgba(0,0,0,0.05)] mb-12">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(79,70,229,0.15),transparent)] pointer-events-none" />
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="max-w-6xl mx-auto relative z-10 text-center sm:text-left">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-indigo-300 text-xs font-bold mb-6">
+            <Ticket size={14} className="animate-pulse" />
+            <span>Plataforma InTicket</span>
+          </div>
+          
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight max-w-3xl mb-6 bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+            Explore os melhores eventos da região
           </h1>
-          <p className="text-slate-400 text-lg max-w-2xl">
-            Garanta seu lugar nos melhores eventos do ano. Checkout rápido, seguro e sem complicações.
+          <p className="text-slate-400 text-lg md:text-xl max-w-2xl font-medium leading-relaxed">
+            Garanta seu ingresso de forma rápida, segura e 100% digital. Descubra novas experiências e viva momentos inesquecíveis.
           </p>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {events.map((event) => (
-            <PurchaseEventCard
-              key={event.id}
-              event={event}
-              onPurchaseSuccess={handlePurchaseSuccess}
-            />
-          ))}
-        </div>
-      </main>
+      {/* Main Content Area */}
+      <div className="max-w-6xl mx-auto px-6 sm:px-8">
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-24 space-y-4">
+            <Spinner />
+            <span className="text-slate-500 font-semibold text-sm animate-pulse">Carregando experiências...</span>
+          </div>
+        ) : events.length === 0 ? (
+          <div className="bg-white rounded-3xl border border-slate-100 p-16 text-center text-slate-500 shadow-xl max-w-2xl mx-auto flex flex-col items-center justify-center space-y-6 transform hover:scale-[1.01] transition-all duration-300">
+            <div className="p-4 bg-indigo-50 rounded-full text-indigo-500">
+              <Calendar className="w-12 h-12" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-800 mb-2">Nenhum evento disponível no momento</h3>
+              <p className="text-slate-400 max-w-md mx-auto">
+                No momento não temos eventos com ingressos disponíveis. Fique de olho, em breve teremos novas atrações!
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+              <h2 className="text-xl font-extrabold text-slate-800 tracking-tight">Próximos Eventos</h2>
+              <span className="text-xs font-bold bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full">
+                {events.length} {events.length === 1 ? 'evento ativo' : 'eventos ativos'}
+              </span>
+            </div>
+
+            {/* Responsive grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {events.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
