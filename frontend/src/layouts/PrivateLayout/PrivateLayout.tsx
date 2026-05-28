@@ -36,8 +36,16 @@ export const PrivateLayout = () => {
             Dashboard
           </NavLink>
           <NavLink to="/eventos" className={navLinkClass}>
-            Eventos
+            Meus Eventos (Admin)
           </NavLink>
+          <div className="my-4 border-t border-slate-100"></div>
+          <div className="px-4 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">
+            Visão do Participante
+          </div>
+          <NavLink to="/meus-ingressos" className={navLinkClass}>
+            Meus Ingressos
+          </NavLink>
+          <div className="my-4 border-t border-slate-100"></div>
           <div className="px-4 py-2 text-slate-600 hover:bg-slate-50 rounded-lg font-medium text-sm cursor-pointer transition-colors">
             Configurações
           </div>

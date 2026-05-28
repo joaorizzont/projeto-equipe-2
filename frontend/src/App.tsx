@@ -8,6 +8,8 @@ import { Dashboard } from "./pages/Dashboard/Dashboard";
 import { Events } from "./pages/Events/Events";
 import { CreateEvent } from "./pages/Events/CreateEvent";
 import { EventDetail } from "./pages/Events/EventDetail";
+import { MyTickets } from "./pages/Tickets/MyTickets";
+import { TicketView } from "./pages/Tickets/TicketView";
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
           <Route path="/eventos" element={<Events />} />
           <Route path="/eventos/novo" element={<CreateEvent />} />
           <Route path="/eventos/:id" element={<EventDetail />} />
+          <Route path="/meus-ingressos" element={<MyTickets />} />
+          <Route path="/ingresso/:id" element={<TicketView />} />
         </Route>
       </Routes>
     </BrowserRouter>
