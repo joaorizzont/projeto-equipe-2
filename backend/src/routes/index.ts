@@ -2,6 +2,7 @@ import { Router } from "express";
 import { HealthController } from "../controllers/HealthController";
 import { userController } from "../controllers/UserController";
 import { AuthController } from "../controllers/AuthController";
+import checkoutRoutes from "./checkout.routes";
 import { EventController } from "../controllers/EventController";
 import { verifyToken, verifyRole } from "../middlewares/auth.middleware";
 import { UserRole } from "../models/User";
@@ -35,5 +36,7 @@ router.get("/private-admin", verifyToken, verifyRole([UserRole.ADMIN]), (req, re
 
 router.use("/admin", adminRoutes);
 router.use("/", userRoutes);
+
+router.use('/checkout', checkoutRoutes);
 
 export default router;
