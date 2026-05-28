@@ -25,7 +25,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ event, onClose, on
       setToast({ message: 'Faça login para comprar ingressos', type: 'info' });
       setTimeout(() => {
         onClose();
-        navigate('/signin');
+        navigate('/login');
       }, 1500);
       return;
     }

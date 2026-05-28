@@ -1,90 +1,67 @@
-import React, { useState, useEffect } from 'react';
+import { Plus } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { EventCard } from '../../components/EventCard/EventCard';
 import type { PublicEventResponse } from '../../api/response-types/PublicEventResponse';
-import { Spinner } from '../../components/UI/Spinner';
 
-export const Events: React.FC = () => {
-  const [events, setEvents] = useState<PublicEventResponse[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Mock fetching events for demonstration, as the public API might be missing
-  const fetchEvents = async () => {
-    setLoading(true);
-    try {
-      // In a real scenario, this would call an EventApi
-      // For now, we mock some data to show the EventCards and Checkout flow
-      const mockEvents: PublicEventResponse[] = [
-        {
-          id: '1',
-          title: 'Conferência Tech 2026',
-          defaultStock: 100,
-          currentStock: 45,
-          validAt: '2026-06-15T19:00:00Z',
-          imageUrl: 'https://images.unsplash.com/photo-1540575861501-7cf05a4b125a?auto=format&fit=crop&q=80&w=1000',
-        },
-        {
-          id: '2',
-          title: 'Festival de Verão InTicket',
-          defaultStock: 500,
-          currentStock: 12,
-          validAt: '2026-07-20T14:00:00Z',
-          imageUrl: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=1000',
-        },
-        {
-          id: '3',
-          title: 'Workshop de Design UI/UX',
-          defaultStock: 50,
-          currentStock: 0,
-          validAt: '2026-05-30T10:00:00Z',
-          imageUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1000',
-        },
-      ];
-      
-      setEvents(mockEvents);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
-  const handlePurchaseSuccess = () => {
-    // Reload events to reflect new stock
-    fetchEvents();
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <Spinner size="lg" className="text-indigo-500" />
-      </div>
-    );
+const mockEvents: PublicEventResponse[] = [
+  {
+    id: '1',
+    title: 'Conferência Nacional de Tecnologia 2026',
+    validAt: '2026-08-15T09:00:00.000Z',
+    defaultStock: 500,
+    currentStock: 158,
+    imageUrl: null
+  },
+  {
+    id: '2',
+    title: 'Workshop Premium: Liderança e Inovação',
+    validAt: '2026-08-20T14:00:00.000Z',
+    defaultStock: 150,
+    currentStock: 0,
+    imageUrl: null
+  },
+  {
+    id: '3',
+    title: 'Seminário Anual de Gestão Ágil',
+    validAt: '2026-04-10T08:30:00.000Z',
+    defaultStock: 300,
+    currentStock: 11,
+    imageUrl: null
+  },
+  {
+    id: '4',
+    title: 'Bootcamp UI/UX Avançado',
+    validAt: '2026-09-05T19:00:00.000Z',
+    defaultStock: 100,
+    currentStock: 55,
+    imageUrl: null
   }
+];
 
+export const Events = () => {
   return (
-    <div className="min-h-screen bg-slate-950 text-white selection:bg-indigo-500/30 pb-20">
-      <main className="max-w-7xl mx-auto pt-16 px-8">
-        <div className="space-y-4 mb-12">
-          <h1 className="text-4xl md:text-6xl font-black tracking-tight">
-            Explore <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Eventos</span>
-          </h1>
-          <p className="text-slate-400 text-lg max-w-2xl">
-            Garanta seu lugar nos melhores eventos do ano. Checkout rápido, seguro e sem complicações.
-          </p>
+    <div className="space-y-8 animate-in fade-in duration-500">
+      
+      {/* Cabeçalho da Página */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Meus Eventos</h1>
+          <p className="text-slate-500 text-sm mt-1">Gerencie, acompanhe e crie novos eventos na plataforma.</p>
         </div>
+        
+        <Link to="/eventos/novo" className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-[0_4px_14px_0_rgb(79,70,229,0.39)] hover:shadow-[0_6px_20px_rgba(79,70,229,0.23)] hover:-translate-y-0.5 transition-all w-fit">
+          <Plus size={18} />
+          Criar Novo Evento
+        </Link>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {events.map((event) => (
-            <EventCard 
-              key={event.id} 
-              event={event} 
-              onPurchaseSuccess={handlePurchaseSuccess}
-            />
-          ))}
-        </div>
-      </main>
+      {/* Grid de Eventos */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 xl:gap-8 gap-6">
+        {mockEvents.map(event => (
+          <EventCard key={event.id} event={event} />
+        ))}
+      </div>
+
     </div>
   );
 };
