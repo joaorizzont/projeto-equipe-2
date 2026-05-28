@@ -13,45 +13,46 @@ export const Footer = () => {
             } else {
                 setStatus('INACTIVE');
             }
-        } catch (error) {
+        } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
             setStatus('INACTIVE');
         }
     };
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         checkStatus();
         const interval = setInterval(checkStatus, 10000); // Polling a cada 10s
         return () => clearInterval(interval);
     }, []);
 
     return (
-        <footer className="fixed bottom-0 w-full bg-slate-900 text-slate-300 p-4 border-t border-slate-800 flex justify-between items-center px-8 backdrop-blur-md bg-opacity-80">
+        <footer className="w-full bg-white/80 text-slate-600 p-4 border-t border-slate-200 flex justify-between items-center px-8 backdrop-blur-md shrink-0">
             <div className="flex items-center gap-2">
-                <Activity size={18} className="text-indigo-400" />
-                <span className="font-medium text-sm tracking-tight">InTicket Platform</span>
+                <Activity size={18} className="text-indigo-600" />
+                <span className="font-semibold text-sm tracking-tight text-slate-800">Plataforma</span>
             </div>
             
-            <div className="flex items-center gap-3 bg-slate-800/50 px-3 py-1.5 rounded-full border border-slate-700/50">
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Status da API:</span>
+            <div className="flex items-center gap-3 bg-slate-50/80 px-3 py-1.5 rounded-full border border-slate-200/80 shadow-sm">
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Status da API:</span>
                 
                 {status === 'LOADING' && (
                     <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-slate-500 rounded-full animate-pulse" />
-                        <span className="text-xs font-bold text-slate-400 uppercase">Verificando...</span>
+                        <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse" />
+                        <span className="text-xs font-bold text-slate-500 uppercase">Verificando...</span>
                     </div>
                 )}
                 
                 {status === 'ACTIVE' && (
                     <div className="flex items-center gap-2">
-                        <ShieldCheck size={14} className="text-emerald-400" />
-                        <span className="text-xs font-bold text-emerald-400 uppercase">Ativo</span>
+                        <ShieldCheck size={14} className="text-emerald-500" />
+                        <span className="text-xs font-bold text-emerald-600 uppercase">Ativo</span>
                     </div>
                 )}
                 
                 {status === 'INACTIVE' && (
                     <div className="flex items-center gap-2">
-                        <ShieldAlert size={14} className="text-rose-400" />
-                        <span className="text-xs font-bold text-rose-400 uppercase">Inativo</span>
+                        <ShieldAlert size={14} className="text-rose-500" />
+                        <span className="text-xs font-bold text-rose-600 uppercase">Inativo</span>
                     </div>
                 )}
             </div>

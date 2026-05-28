@@ -62,4 +62,25 @@ export class EventController {
       return res.status(statusCode).json({ message });
     }
   };
+
+  public delete = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { id } = req.params;
+      await this.eventService.delete(id as string);
+      return res.status(204).send();
+    } catch (error: any) {
+      const statusCode = error.statusCode || 500;
+      const message = statusCode === 500 ? "Erro interno do servidor." : error.message;
+      return res.status(statusCode).json({ message });
+    }
+  };
+
+  public listPublic = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const events = await this.eventService.findAllPublic();
+      return res.status(200).json(events);
+    } catch (error: any) {
+      return res.status(500).json({ message: "Erro interno do servidor." });
+    }
+  };
 }

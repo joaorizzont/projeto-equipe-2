@@ -38,6 +38,7 @@ export class EventService {
     return this.eventRepository.save({
       ...data,
       validAt: validAtDate,
+      currentStock: data.defaultStock,
     });
   }
 
@@ -66,5 +67,21 @@ export class EventService {
       ...data,
       validAt: validAtDate,
     });
+  }
+
+  public async delete(id: string): Promise<void> {
+    const event = await this.eventRepository.findById(id);
+
+    if (!event) {
+      const error = new Error("Evento não encontrado.");
+      (error as any).statusCode = 404;
+      throw error;
+    }
+
+    await this.eventRepository.softDelete(id);
+  }
+
+  public async findAllPublic(): Promise<Event[]> {
+    return this.eventRepository.findAllPublic();
   }
 }
