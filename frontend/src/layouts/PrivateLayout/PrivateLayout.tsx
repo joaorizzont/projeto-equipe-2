@@ -1,6 +1,6 @@
 import { Outlet, Navigate, NavLink } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import { LogOut, LayoutDashboard, Calendar, Ticket, Settings } from "lucide-react";
+import { LogOut, LayoutDashboard, Calendar, Ticket, Settings, Users } from "lucide-react";
 import { authApi } from "../../api/auth/AuthApi";
 import React from "react";
 
@@ -50,6 +50,10 @@ export const PrivateLayout: React.FC = () => {
             <NavLink to="/admin/eventos" className={navLinkClass}>
               <Calendar size={20} />
               <span>Meus Eventos (Admin)</span>
+            </NavLink>
+            <NavLink to="/admin/users" className={navLinkClass}>
+              <Users size={20} />
+              <span>Usuários</span>
             </NavLink>
             
             <div className="my-4 border-t border-slate-900"></div>

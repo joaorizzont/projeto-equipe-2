@@ -13,6 +13,7 @@ import { MyTickets } from "./pages/Tickets/MyTickets";
 import { TicketView } from "./pages/Tickets/TicketView";
 import { EventsGrid } from "./pages/Admin/EventsGrid";
 import { PublicEvents } from "./pages/PublicEvents/PublicEvents";
+import { UsersAdmin } from "./pages/Admin/UsersAdmin";
 import { Footer } from "./components/Footer/Footer";
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
           <Route path="/eventos/:id/editar" element={<CreateEvent />} />
           <Route path="/meus-ingressos" element={<MyTickets />} />
           <Route path="/ingresso/:id" element={<TicketView />} />
+          <Route path="/admin/users" element={<UsersAdmin />} />
         </Route>
 
         {/* Painel Admin (#158) */}
