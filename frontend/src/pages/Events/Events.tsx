@@ -1,31 +1,26 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Plus, Loader2, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { EventCard } from '../../components/EventCard/EventCard';
 import type { PublicEventResponse } from '../../api/response-types/PublicEventResponse';
 import { eventsApi } from '../../api/events/EventsApi';
 import { toast } from 'react-hot-toast';
+import { EventsFilter } from '../../components/EventsFilter/EventsFilter';
+import type { EventFilterType } from '../../components/EventsFilter/EventsFilter';
+import type { EventResponse } from '../../api/response-types/EventResponse';
 
 export const Events = () => {
-  const [events, setEvents] = useState<PublicEventResponse[]>([]);
+  const [allEvents, setAllEvents] = useState<EventResponse[]>([]);
+  const [activeFilter, setActiveFilter] = useState<EventFilterType>(() => {
+    return (localStorage.getItem('inticket_admin_events_filter') as EventFilterType) || 'todos';
+  });
   const [loading, setLoading] = useState(true);
 
   const fetchEvents = async () => {
     try {
       setLoading(true);
       const apiEvents = await eventsApi.listAll();
-
-      // O backend não retorna currentStock; usa defaultStock como fallback.
-      const mappedEvents: PublicEventResponse[] = apiEvents.map(e => ({
-        id: e.id,
-        title: e.title,
-        defaultStock: e.defaultStock,
-        currentStock: e.defaultStock,
-        validAt: e.validAt,
-        imageUrl: e.imageUrl,
-      }));
-
-      setEvents(mappedEvents);
+      setAllEvents(apiEvents);
     } catch (error) {
       toast.error('Erro ao carregar eventos do servidor.');
     } finally {
@@ -33,9 +28,40 @@ export const Events = () => {
     }
   };
 
+  const handleFilterChange = (filter: EventFilterType) => {
+    setActiveFilter(filter);
+    localStorage.setItem('inticket_admin_events_filter', filter);
+  };
+
   useEffect(() => {
     fetchEvents();
   }, []);
+
+  const filteredEvents = useMemo<PublicEventResponse[]>(() => {
+    const now = new Date();
+
+    return allEvents
+      // 1. Filtra por status (client-side) com base em activeFilter
+      .filter(e => {
+        const isPast = new Date(e.validAt).getTime() < now.getTime();
+        const currentStock = e.currentStock ?? e.defaultStock;
+
+        if (activeFilter === 'disponivel') return !isPast && currentStock > 0;
+        if (activeFilter === 'esgotado') return currentStock === 0 && !isPast;
+        if (activeFilter === 'encerrado') return isPast;
+        return true; // 'todos'
+      })
+      // 2. Mapeia para PublicEventResponse usado pelo EventCard (#163).
+      //    O backend não retorna currentStock; usa defaultStock como fallback.
+      .map(e => ({
+        id: e.id,
+        title: e.title,
+        defaultStock: e.defaultStock,
+        currentStock: e.currentStock ?? e.defaultStock,
+        validAt: e.validAt,
+        imageUrl: e.imageUrl,
+      }));
+  }, [allEvents, activeFilter]);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -53,11 +79,16 @@ export const Events = () => {
         </Link>
       </div>
 
+      {/* Filtros de Status */}
+      <div className="flex justify-between items-center pt-2">
+        <EventsFilter activeFilter={activeFilter} onChange={handleFilterChange} />
+      </div>
+
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <Loader2 className="animate-spin text-indigo-600 w-8 h-8" />
         </div>
-      ) : events.length === 0 ? (
+      ) : allEvents.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-100 p-12 text-center text-slate-500 shadow-sm flex flex-col items-center justify-center space-y-4">
           <Calendar className="text-slate-300 w-16 h-16" />
           <div>
@@ -69,10 +100,18 @@ export const Events = () => {
             Criar Primeiro Evento
           </Link>
         </div>
+      ) : filteredEvents.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-slate-100 p-12 text-center text-slate-500 shadow-sm flex flex-col items-center justify-center space-y-4 animate-in fade-in duration-300">
+          <Calendar className="text-slate-300 w-16 h-16" />
+          <div>
+            <h3 className="text-lg font-bold text-slate-700">Nenhum evento encontrado</h3>
+            <p className="text-slate-400 text-sm mt-1">Não há eventos correspondentes ao filtro "{activeFilter === 'disponivel' ? 'Disponível' : activeFilter === 'esgotado' ? 'Esgotado' : activeFilter === 'encerrado' ? 'Encerrado' : 'Todos'}" selecionado.</p>
+          </div>
+        </div>
       ) : (
         /* Grid de Eventos */
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 xl:gap-8 gap-6">
-          {events.map(event => (
+          {filteredEvents.map(event => (
             <EventCard key={event.id} event={event} />
           ))}
         </div>

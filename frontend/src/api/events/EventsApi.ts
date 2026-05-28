@@ -52,6 +52,7 @@ class EventsApi extends BaseApi {
         return {
           ...e,
           ...meta,
+          currentStock: e.currentStock ?? e.defaultStock,
         };
       });
   }
@@ -76,6 +77,7 @@ class EventsApi extends BaseApi {
     return {
       ...response,
       ...meta,
+      currentStock: response.currentStock ?? response.defaultStock,
     };
   }
 
@@ -98,6 +100,7 @@ class EventsApi extends BaseApi {
     return {
       ...response,
       ...updatedMeta,
+      currentStock: response.currentStock ?? response.defaultStock,
     };
   }
 
