@@ -65,8 +65,9 @@ export class UserService {
     return userWithoutPassword as Omit<User, 'senha'>;
   }
 
-  public async findAll(): Promise<User[]> {
-    throw new Error("Method not implemented.");
+  public async findAll(): Promise<Omit<User, "senha">[]> {
+    const users = await this.userRepositoryInstance.findAll();
+    return users.map(({ senha: _, ...rest }) => rest as Omit<User, "senha">);
   }
 
   public async updateRole(
