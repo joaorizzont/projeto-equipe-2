@@ -1,21 +1,44 @@
-import { BaseApi } from '../base-api';
-import type { SignInRequest } from '../request-types/SignInRequest';
-import type { SignUpRequest } from '../request-types/SignUpRequest';
-import type { SignInResponse } from '../response-types/SignInResponse';
-import type { SignUpResponse } from '../response-types/SignUpResponse';
+import { BaseApi } from "../base-api";
+
+interface LoginCredentials {
+    email: string;
+    senha: string;
+}
+
+interface LoginResponse {
+    token: string;
+    user: {
+        id: number;
+        nome: string;
+        email: string;
+        cpf: string;
+        telefone: string;
+        role: string;
+    };
+}
 
 class AuthApi extends BaseApi {
     constructor() {
-        const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
-        super(baseUrl);
+        super(import.meta.env.VITE_API_URL || 'http://localhost:3000');
     }
 
-    public async signin(payload: SignInRequest): Promise<SignInResponse> {
-        return this.post<SignInResponse>('/login', payload);
+    public async login(credentials: LoginCredentials): Promise<LoginResponse> {
+        const response = await this.post<LoginResponse>('/auth/login', credentials);
+        
+        // Armazenar o token no localStorage
+        if (response && response.token) {
+            localStorage.setItem('@Patio:token', response.token);
+            // Também podemos armazenar alguns dados básicos do usuário se necessário
+            localStorage.setItem('@Patio:user', JSON.stringify(response.user));
+        }
+
+        return response;
     }
 
-    public async signup(payload: SignUpRequest): Promise<SignUpResponse> {
-        return this.post<SignUpResponse>('/register', payload);
+    public logout(): void {
+        localStorage.removeItem('@Patio:token');
+        localStorage.removeItem('@Patio:user');
+        window.location.href = '/login';
     }
 }
 

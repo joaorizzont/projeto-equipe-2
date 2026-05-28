@@ -46,4 +46,52 @@ export class AuthController {
       return res.status(statusCode).json({ message });
     }
   };
+
+  public login = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { email, senha } = req.body;
+
+      if (!email || !senha) {
+        return res.status(400).json({
+          message: "Campos obrigatórios ausentes: email, senha.",
+        });
+      }
+
+      const result = await this.authService.login({ email, senha });
+
+      return res.status(200).json(result);
+    } catch (error: any) {
+      const statusCode = error.statusCode || 500;
+      const message =
+        statusCode === 500
+          ? "Erro interno do servidor."
+          : error.message;
+
+      return res.status(statusCode).json({ message });
+    }
+  };
+
+  public refresh = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { refreshToken } = req.body;
+
+      if (!refreshToken) {
+        return res.status(400).json({
+          message: "Refresh token é obrigatório.",
+        });
+      }
+
+      const result = await this.authService.refreshToken(refreshToken);
+
+      return res.status(200).json(result);
+    } catch (error: any) {
+      const statusCode = error.statusCode || 500;
+      const message =
+        statusCode === 500
+          ? "Erro interno do servidor."
+          : error.message;
+
+      return res.status(statusCode).json({ message });
+    }
+  };
 }

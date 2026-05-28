@@ -1,5 +1,9 @@
-export const Spinner = () => {
-    return (
-        <div className="inline-block animate-spin rounded-full h-4 w-4 border-2 border-white border-t-blue-600"></div>
-    );
+import React from 'react';
+
+export const Spinner: React.FC = () => {
+  return (
+    <div className="flex justify-center items-center">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+    </div>
+  );
 };
