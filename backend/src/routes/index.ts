@@ -13,6 +13,9 @@ router.get("/health", healthController.check);
 
 import adminRoutes from "./admin.routes";
 
+// Auth routes
+router.post("/auth/login", authController.login);
+
 // Users routes
 router.post("/users/register", userController.register);
 
