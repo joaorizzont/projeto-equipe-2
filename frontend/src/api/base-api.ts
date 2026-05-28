@@ -13,6 +13,7 @@ export abstract class BaseApi {
         });
 
         this.initializeRequestInterceptor();
+        this.initializeResponseInterceptor();
     }
 
     private initializeRequestInterceptor() {
@@ -25,6 +26,51 @@ export abstract class BaseApi {
                 return config;
             },
             (error) => Promise.reject(error)
+        );
+    }
+
+    private initializeResponseInterceptor() {
+        this.axiosInstance.interceptors.response.use(
+            (response) => response,
+            async (error) => {
+                const originalRequest = error.config;
+                
+                if (error.response?.status === 401 && !originalRequest._retry) {
+                    originalRequest._retry = true;
+                    const refreshToken = localStorage.getItem('refreshToken');
+                    
+                    if (!refreshToken) {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('refreshToken');
+                        window.location.href = '/signin';
+                        return Promise.reject(error);
+                    }
+
+                    try {
+                        const refreshResponse = await axios.post<{ accessToken: string }>(
+                            `${this.axiosInstance.defaults.baseURL || ''}/refresh`,
+                            { refreshToken }
+                        );
+
+                        if (refreshResponse.status === 200) {
+                            const newAccessToken = refreshResponse.data.accessToken;
+                            localStorage.setItem('token', newAccessToken);
+                            
+                            if (originalRequest.headers) {
+                                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                            }
+                            
+                            return this.axiosInstance(originalRequest);
+                        }
+                    } catch (refreshError) {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('refreshToken');
+                        window.location.href = '/signin';
+                        return Promise.reject(refreshError);
+                    }
+                }
+                return Promise.reject(error);
+            }
         );
     }
 
