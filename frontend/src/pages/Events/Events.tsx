@@ -1,48 +1,40 @@
 import { Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { EventCard } from '../../components/EventCard/EventCard';
-import type { EventData } from '../../components/EventCard/EventCard';
+import type { PublicEventResponse } from '../../api/response-types/PublicEventResponse';
 
-const mockEvents: EventData[] = [
+const mockEvents: PublicEventResponse[] = [
   {
     id: '1',
     title: 'Conferência Nacional de Tecnologia 2026',
-    date: '15 de Agosto, 2026',
-    time: '09:00 - 18:00',
-    location: 'Centro de Convenções, São Paulo',
-    status: 'disponivel',
-    capacity: 500,
-    registered: 342
+    validAt: '2026-08-15T09:00:00.000Z',
+    defaultStock: 500,
+    currentStock: 158,
+    imageUrl: null
   },
   {
     id: '2',
     title: 'Workshop Premium: Liderança e Inovação',
-    date: '20 de Agosto, 2026',
-    time: '14:00 - 17:00',
-    location: 'Auditório Master, Rio de Janeiro',
-    status: 'esgotado',
-    capacity: 150,
-    registered: 150
+    validAt: '2026-08-20T14:00:00.000Z',
+    defaultStock: 150,
+    currentStock: 0,
+    imageUrl: null
   },
   {
     id: '3',
     title: 'Seminário Anual de Gestão Ágil',
-    date: '10 de Julho, 2026',
-    time: '08:30 - 12:30',
-    location: 'Teatro Central, Curitiba',
-    status: 'finalizado',
-    capacity: 300,
-    registered: 289
+    validAt: '2026-04-10T08:30:00.000Z',
+    defaultStock: 300,
+    currentStock: 11,
+    imageUrl: null
   },
   {
     id: '4',
     title: 'Bootcamp UI/UX Avançado',
-    date: '05 de Setembro, 2026',
-    time: '19:00 - 22:00',
-    location: 'Online (Zoom)',
-    status: 'disponivel',
-    capacity: 100,
-    registered: 45
+    validAt: '2026-09-05T19:00:00.000Z',
+    defaultStock: 100,
+    currentStock: 55,
+    imageUrl: null
   }
 ];
 
