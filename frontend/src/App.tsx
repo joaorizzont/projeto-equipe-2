@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { PublicLayout } from "./layouts/PublicLayout/PublicLayout";
 import { PrivateLayout } from "./layouts/PrivateLayout/PrivateLayout";
+import { PrivateLayout as AdminLayout } from "./layouts/PrivateLayout";
 import { Home } from "./pages/Home/Home";
 import { Register } from "./pages/Register/Register";
 import { Login } from "./pages/Login/Login";
@@ -10,8 +11,10 @@ import { CreateEvent } from "./pages/Events/CreateEvent";
 import { EventDetail } from "./pages/Events/EventDetail";
 import { MyTickets } from "./pages/Tickets/MyTickets";
 import { TicketView } from "./pages/Tickets/TicketView";
+import { EventsGrid } from "./pages/Admin/EventsGrid";
 import { PublicEvents } from "./pages/PublicEvents/PublicEvents";
 import { UsersAdmin } from "./pages/Admin/UsersAdmin";
+import { Footer } from "./components/Footer/Footer";
 
 function App() {
   return (
@@ -22,24 +25,31 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/eventos" element={<PublicEvents />} />
         </Route>
+
+        {/* Listagem pública de eventos + checkout (#181) */}
+        <Route path="/events" element={<PublicEvents />} />
 
         {/* Rotas Privadas (Logadas) */}
         <Route element={<PrivateLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin/eventos" element={<Events />} />
-          <Route path="/admin/eventos/novo" element={<CreateEvent />} />
-          <Route path="/admin/eventos/:id" element={<EventDetail />} />
-          <Route path="/admin/eventos/:id/editar" element={<CreateEvent />} />
+          <Route path="/eventos" element={<Events />} />
+          <Route path="/eventos/novo" element={<CreateEvent />} />
+          <Route path="/eventos/:id" element={<EventDetail />} />
+          <Route path="/eventos/:id/editar" element={<CreateEvent />} />
           <Route path="/meus-ingressos" element={<MyTickets />} />
           <Route path="/ingresso/:id" element={<TicketView />} />
           <Route path="/admin/users" element={<UsersAdmin />} />
         </Route>
+
+        {/* Painel Admin (#158) */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="eventos" element={<EventsGrid />} />
+        </Route>
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }
 
 export default App;
-
