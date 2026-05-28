@@ -50,7 +50,7 @@ export class CheckoutService {
       const tickets: Ticket[] = [];
       for (let i = 0; i < quantidade; i++) {
         const ticket = await this.ticketRepository.createWithManager({
-          ticketCode: crypto.randomUUID(),
+          codigoIngresso: crypto.randomUUID(),
           status: TicketStatus.ATIVO,
           userId,
           eventId,

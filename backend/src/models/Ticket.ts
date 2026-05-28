@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './User';
 import { Event } from './Event';
 
@@ -14,28 +14,38 @@ export class Ticket {
   id!: string;
 
   @Column({ type: 'varchar', length: 36, unique: true, nullable: false })
-  ticketCode!: string;
+  codigoIngresso!: string;
 
-  @Column({ type: 'enum', enum: TicketStatus, default: TicketStatus.ATIVO })
+  @Column({
+    type: 'enum',
+    enum: TicketStatus,
+    default: TicketStatus.ATIVO,
+  })
   status!: TicketStatus;
 
-  @Column({ name: 'user_id', type: 'varchar' })
+  @Column({ name: 'user_id' })
   userId!: string;
 
-  @Column({ name: 'event_id', type: 'varchar' })
+  @Column({ name: 'event_id' })
   eventId!: string;
 
-  @ManyToOne(() => User, { nullable: false, onDelete: 'RESTRICT' })
+  @ManyToOne(() => User, (user) => user.tickets, {
+    nullable: false,
+    onDelete: 'RESTRICT',
+  })
   @JoinColumn({ name: 'user_id' })
   user!: User;
 
-  @ManyToOne(() => Event, { nullable: false, onDelete: 'RESTRICT' })
+  @ManyToOne(() => Event, (event) => event.tickets, {
+    nullable: false,
+    onDelete: 'RESTRICT',
+  })
   @JoinColumn({ name: 'event_id' })
   event!: Event;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt!: Date;
 }

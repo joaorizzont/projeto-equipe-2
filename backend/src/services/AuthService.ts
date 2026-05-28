@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { UserRepository } from "../repositories/UserRepository";
 import { CpfValidationService } from "./CpfValidationService";
 import { User, UserRole } from "../models/User";
@@ -12,6 +13,11 @@ interface RegisterUserData {
   role?: UserRole;
 }
 
+interface LoginUserData {
+  email: string;
+  senha: string;
+}
+
 interface RegisterUserResult {
   id: string;
   nome: string;
@@ -21,6 +27,20 @@ interface RegisterUserResult {
   role: UserRole;
   createdAt: Date;
   updatedAt: Date;
+}
+
+interface LoginUserData {
+  email: string;
+  senha: string;
+}
+
+interface AuthTokens {
+  accessToken: string;
+  refreshToken: string;
+}
+
+interface LoginResult extends AuthTokens {
+  user: RegisterUserResult;
 }
 
 export class AuthService {
@@ -83,5 +103,79 @@ export class AuthService {
       createdAt: savedUser.createdAt,
       updatedAt: savedUser.updatedAt,
     };
+  }
+
+  public async login(data: LoginUserData): Promise<LoginResult> {
+    const { email, senha } = data;
+
+    const user = await this.userRepository.findByEmailWithPassword(email);
+    if (!user) {
+      const error = new Error("E-mail ou senha incorretos.");
+      (error as any).statusCode = 401;
+      throw error;
+    }
+
+    const isPasswordValid = await bcrypt.compare(senha, user.senha);
+    if (!isPasswordValid) {
+      const error = new Error("E-mail ou senha incorretos.");
+      (error as any).statusCode = 401;
+      throw error;
+    }
+
+    const accessToken = jwt.sign(
+      { id: user.id, role: user.role },
+      process.env.JWT_SECRET || "default_secret",
+      { expiresIn: (process.env.JWT_EXPIRES_IN || "1h") as any }
+    );
+
+    const refreshToken = jwt.sign(
+      { id: user.id },
+      process.env.JWT_REFRESH_SECRET || "default_refresh_secret",
+      { expiresIn: (process.env.JWT_REFRESH_EXPIRES_IN || "7d") as any }
+    );
+
+    return {
+      accessToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        nome: user.nome,
+        cpf: user.cpf,
+        email: user.email,
+        telefone: user.telefone,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+    };
+  }
+
+  public async refreshToken(token: string): Promise<{ accessToken: string }> {
+    try {
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_REFRESH_SECRET || "default_refresh_secret"
+      ) as { id: string };
+
+      const user = await this.userRepository.findById(decoded.id);
+      
+      if (!user) {
+        const error = new Error("Usuário não encontrado.");
+        (error as any).statusCode = 401;
+        throw error;
+      }
+
+      const newAccessToken = jwt.sign(
+        { id: user.id, role: user.role },
+        process.env.JWT_SECRET || "default_secret",
+        { expiresIn: (process.env.JWT_EXPIRES_IN || "1h") as any }
+      );
+
+      return { accessToken: newAccessToken };
+    } catch (err) {
+      const error = new Error("Token inválido ou expirado.");
+      (error as any).statusCode = 401;
+      throw error;
+    }
   }
 }
