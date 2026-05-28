@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { PublicLayout } from "./layouts/PublicLayout/PublicLayout";
 import { PrivateLayout } from "./layouts/PrivateLayout/PrivateLayout";
+import { PrivateLayout as AdminLayout } from "./layouts/PrivateLayout";
 import { Home } from "./pages/Home/Home";
 import { Register } from "./pages/Register/Register";
 import { Login } from "./pages/Login/Login";
@@ -10,6 +11,9 @@ import { CreateEvent } from "./pages/Events/CreateEvent";
 import { EventDetail } from "./pages/Events/EventDetail";
 import { MyTickets } from "./pages/Tickets/MyTickets";
 import { TicketView } from "./pages/Tickets/TicketView";
+import { EventsGrid } from "./pages/Admin/EventsGrid";
+import { PublicEvents } from "./pages/PublicEvents/PublicEvents";
+import { Footer } from "./components/Footer/Footer";
 
 function App() {
   return (
@@ -22,6 +26,9 @@ function App() {
           <Route path="/register" element={<Register />} />
         </Route>
 
+        {/* Listagem pública de eventos + checkout (#181) */}
+        <Route path="/events" element={<PublicEvents />} />
+
         {/* Rotas Privadas (Logadas) */}
         <Route element={<PrivateLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
@@ -32,10 +39,15 @@ function App() {
           <Route path="/meus-ingressos" element={<MyTickets />} />
           <Route path="/ingresso/:id" element={<TicketView />} />
         </Route>
+
+        {/* Painel Admin (#158) */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="eventos" element={<EventsGrid />} />
+        </Route>
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }
 
 export default App;
-

@@ -3,11 +3,11 @@ import { X, CheckCircle, AlertCircle } from 'lucide-react';
 
 interface ToastProps {
   message: string;
-  type: 'success' | 'error';
+  type?: 'success' | 'error';
   onClose: () => void;
 }
 
-export const Toast: React.FC<ToastProps> = ({ message, type, onClose }) => {
+export const Toast: React.FC<ToastProps> = ({ message, type = 'error', onClose }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();

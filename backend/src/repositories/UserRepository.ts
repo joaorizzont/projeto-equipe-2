@@ -37,6 +37,12 @@ export class UserRepository {
     await this.repository.update(id, { role });
     return this.repository.findOneOrFail({ where: { id } });
   }
+
+  public async findAll(): Promise<User[]> {
+    return this.repository.find({
+      order: { createdAt: "DESC" },
+    });
+  }
 }
 
 export const userRepository = new UserRepository();
