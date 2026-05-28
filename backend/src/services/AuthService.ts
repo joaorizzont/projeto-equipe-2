@@ -13,6 +13,11 @@ interface RegisterUserData {
   role?: UserRole;
 }
 
+interface LoginUserData {
+  email: string;
+  senha: string;
+}
+
 interface RegisterUserResult {
   id: string;
   nome: string;

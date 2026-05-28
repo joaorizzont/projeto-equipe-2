@@ -15,6 +15,7 @@ router.get("/health", healthController.check);
 router.get("/public/events", eventController.listPublic);
 
 import adminRoutes from "./admin.routes";
+import userRoutes from "./user.routes";
 
 // Auth routes
 router.post("/auth/login", authController.login);
@@ -33,5 +34,6 @@ router.get("/private-admin", verifyToken, verifyRole([UserRole.ADMIN]), (req, re
 });
 
 router.use("/admin", adminRoutes);
+router.use("/", userRoutes);
 
 export default router;
