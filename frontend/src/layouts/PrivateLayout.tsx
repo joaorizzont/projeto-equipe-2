@@ -5,25 +5,18 @@ export const PrivateLayout: React.FC = () => {
   const token = localStorage.getItem('token');
 
   if (!token) {
-    return <Navigate to="/signin" replace />;
-  }
-
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const isExpired = payload.exp < Date.now() / 1000;
-
-    if (isExpired) {
-      localStorage.removeItem('token');
-      return <Navigate to="/signin" replace />;
-    }
-  } catch (error) {
-    localStorage.removeItem('token');
-    return <Navigate to="/signin" replace />;
+    // Para fins de teste se o login não existir
+    return <Navigate to="/" replace />;
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main className="flex-grow">
+    <div className="min-h-screen bg-slate-50 flex flex-col">
+      <header className="bg-indigo-600 text-white p-4 shadow-md">
+        <div className="container mx-auto">
+          <h1 className="text-xl font-bold">InTicket - Admin Panel</h1>
+        </div>
+      </header>
+      <main className="container mx-auto p-4 flex-grow">
         <Outlet />
       </main>
     </div>

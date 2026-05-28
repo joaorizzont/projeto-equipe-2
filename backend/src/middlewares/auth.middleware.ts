@@ -26,7 +26,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction): vo
 
   const secret = process.env.JWT_SECRET || 'default_secret';
 
-  jwt.verify(token, secret, (err, decoded) => {
+  jwt.verify(token, secret, (err: any, decoded: any) => {
     if (err) {
       res.status(401).json({ message: 'Token inválido ou expirado' });
       return;

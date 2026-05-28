@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { HealthController } from "../controllers/HealthController";
+import { userController } from "../controllers/UserController";
 import { AuthController } from "../controllers/AuthController";
 import { verifyToken, verifyRole } from "../middlewares/auth.middleware";
 import { UserRole } from "../models/User";
@@ -11,6 +12,13 @@ const authController = new AuthController();
 router.get("/health", healthController.check);
 
 import adminRoutes from "./admin.routes";
+import userRoutes from "./user.routes";
+
+// Auth routes
+router.post("/auth/login", authController.login);
+
+// Users routes
+router.post("/users/register", userController.register);
 
 // Public route — no JWT middleware
 router.post("/register", authController.register);
@@ -23,5 +31,6 @@ router.get("/private-admin", verifyToken, verifyRole([UserRole.ADMIN]), (req, re
 });
 
 router.use("/admin", adminRoutes);
+router.use("/", userRoutes);
 
 export default router;
