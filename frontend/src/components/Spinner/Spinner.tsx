@@ -3,7 +3,7 @@ import React from 'react';
 export const Spinner: React.FC = () => {
   return (
     <div className="flex justify-center items-center">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+      <div className="w-5 h-5 border-2 border-slate-200 border-t-indigo-600 rounded-full animate-spin"></div>
     </div>
   );
 };

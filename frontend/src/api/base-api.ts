@@ -19,7 +19,7 @@ export abstract class BaseApi {
     private initializeRequestInterceptor() {
         this.axiosInstance.interceptors.request.use(
             (config) => {
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('@Patio:token');
                 if (token && config.headers) {
                     config.headers.Authorization = `Bearer ${token}`;
                 }
@@ -37,12 +37,13 @@ export abstract class BaseApi {
                 
                 if (error.response?.status === 401 && !originalRequest._retry) {
                     originalRequest._retry = true;
-                    const refreshToken = localStorage.getItem('refreshToken');
+                    const refreshToken = localStorage.getItem('@Patio:refreshToken');
                     
                     if (!refreshToken) {
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('refreshToken');
-                        window.location.href = '/signin';
+                        localStorage.removeItem('@Patio:token');
+                        localStorage.removeItem('@Patio:user');
+                        localStorage.removeItem('@Patio:refreshToken');
+                        window.location.href = '/login';
                         return Promise.reject(error);
                     }
 
@@ -54,7 +55,7 @@ export abstract class BaseApi {
 
                         if (refreshResponse.status === 200) {
                             const newAccessToken = refreshResponse.data.accessToken;
-                            localStorage.setItem('token', newAccessToken);
+                            localStorage.setItem('@Patio:token', newAccessToken);
                             
                             if (originalRequest.headers) {
                                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -63,9 +64,10 @@ export abstract class BaseApi {
                             return this.axiosInstance(originalRequest);
                         }
                     } catch (refreshError) {
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('refreshToken');
-                        window.location.href = '/signin';
+                        localStorage.removeItem('@Patio:token');
+                        localStorage.removeItem('@Patio:user');
+                        localStorage.removeItem('@Patio:refreshToken');
+                        window.location.href = '/login';
                         return Promise.reject(refreshError);
                     }
                 }
@@ -81,6 +83,16 @@ export abstract class BaseApi {
 
     protected async post<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
         const response: AxiosResponse<T> = await this.axiosInstance.post(url, data, config);
+        return response.data;
+    }
+
+    protected async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+        const response: AxiosResponse<T> = await this.axiosInstance.put(url, data, config);
+        return response.data;
+    }
+
+    protected async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+        const response: AxiosResponse<T> = await this.axiosInstance.delete(url, config);
         return response.data;
     }
 }

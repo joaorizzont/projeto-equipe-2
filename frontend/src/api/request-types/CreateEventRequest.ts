@@ -1,11 +1,8 @@
-export interface EventResponse {
-  id: string;
+export interface CreateEventRequest {
   title: string;
   defaultStock: number;
-  validAt: string;
-  imageUrl: string | null;
-  createdAt: string;
-  updatedAt: string;
+  validAt: string; // Formato ISO 8601
+  imageUrl?: string;
   
   // Metadados extras simulados localmente
   description?: string;

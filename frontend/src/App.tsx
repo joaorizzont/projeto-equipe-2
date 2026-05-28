@@ -35,6 +35,7 @@ function App() {
           <Route path="/eventos" element={<Events />} />
           <Route path="/eventos/novo" element={<CreateEvent />} />
           <Route path="/eventos/:id" element={<EventDetail />} />
+          <Route path="/eventos/:id/editar" element={<CreateEvent />} />
           <Route path="/meus-ingressos" element={<MyTickets />} />
           <Route path="/ingresso/:id" element={<TicketView />} />
         </Route>

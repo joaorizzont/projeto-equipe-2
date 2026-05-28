@@ -1,4 +1,3 @@
-import React from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { ArrowLeft, Download, ExternalLink } from 'lucide-react';
 import { DigitalTicket } from '../../components/DigitalTicket/DigitalTicket';
