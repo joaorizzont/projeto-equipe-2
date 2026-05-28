@@ -99,6 +99,40 @@ export class UserService {
 
     return this.userRepositoryInstance.updateRole(targetUserId, newRole);
   }
+
+  public async getProfile(userId: string): Promise<Omit<User, 'senha'>> {
+    const user = await this.userRepositoryInstance.findById(userId);
+    if (!user) {
+      const error = new Error('Usuário não encontrado.');
+      (error as any).statusCode = 404;
+      throw error;
+    }
+    const { senha: _, ...userWithoutPassword } = user;
+    return userWithoutPassword as Omit<User, 'senha'>;
+  }
+
+  public async updateProfile(
+    userId: string,
+    data: { nome?: string; telefone?: string }
+  ): Promise<Omit<User, 'senha'>> {
+    const user = await this.userRepositoryInstance.findById(userId);
+    if (!user) {
+      const error = new Error('Usuário não encontrado.');
+      (error as any).statusCode = 404;
+      throw error;
+    }
+
+    // Rejeitar payload vazio
+    if (!data.nome && !data.telefone) {
+      const error = new Error('Nenhum campo editável fornecido. Campos aceitos: nome, telefone.');
+      (error as any).statusCode = 400;
+      throw error;
+    }
+
+    const updated = await this.userRepositoryInstance.updateProfile(userId, data);
+    const { senha: _, ...userWithoutPassword } = updated;
+    return userWithoutPassword as Omit<User, 'senha'>;
+  }
 }
 
 export const userService = new UserService();

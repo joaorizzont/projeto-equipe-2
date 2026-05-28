@@ -43,6 +43,11 @@ export class UserRepository {
       order: { createdAt: "DESC" },
     });
   }
+
+  public async updateProfile(id: string, data: { nome?: string; telefone?: string }): Promise<User> {
+    await this.repository.update(id, data);
+    return this.repository.findOneOrFail({ where: { id } });
+  }
 }
 
 export const userRepository = new UserRepository();

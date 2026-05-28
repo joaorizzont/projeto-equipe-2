@@ -40,7 +40,7 @@ export class UserController {
 
   public findAll = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const users = await this.userService.findAll();
+      const users = await this.userServiceInstance.findAll();
       return res.status(200).json(users);
     } catch (error: any) {
       const statusCode = error.statusCode || 500;
@@ -68,6 +68,43 @@ export class UserController {
       }
 
       const updatedUser = await this.userServiceInstance.updateRole(id as string, role as UserRole, requestingUserId);
+      return res.status(200).json(updatedUser);
+    } catch (error: any) {
+      const statusCode = error.statusCode || 500;
+      const message = statusCode === 500 ? "Erro interno do servidor." : error.message;
+      return res.status(statusCode).json({ message });
+    }
+  };
+
+  public getProfile = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const userId = req.user!.id;
+      const user = await this.userServiceInstance.getProfile(userId);
+      return res.status(200).json(user);
+    } catch (error: any) {
+      const statusCode = error.statusCode || 500;
+      const message = statusCode === 500 ? "Erro interno do servidor." : error.message;
+      return res.status(statusCode).json({ message });
+    }
+  };
+
+  public updateProfile = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const userId = req.user!.id;
+      const { nome, telefone } = req.body;
+
+      // Rejeitar campos não permitidos explicitamente
+      const allowedFields = ['nome', 'telefone'];
+      const receivedFields = Object.keys(req.body);
+      const forbiddenFields = receivedFields.filter(f => !allowedFields.includes(f));
+
+      if (forbiddenFields.length > 0) {
+        return res.status(400).json({
+          message: `Campos não permitidos: ${forbiddenFields.join(', ')}. Campos editáveis: nome, telefone.`,
+        });
+      }
+
+      const updatedUser = await this.userServiceInstance.updateProfile(userId, { nome, telefone });
       return res.status(200).json(updatedUser);
     } catch (error: any) {
       const statusCode = error.statusCode || 500;
