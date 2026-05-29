@@ -4,7 +4,7 @@ export interface UpdateEventRequest {
   validAt?: string; // Formato ISO 8601
   imageUrl?: string;
   
-  // Metadados extras simulados localmente
+  // Campos opcionais persistidos no backend
   description?: string;
   location?: string;
   format?: string;

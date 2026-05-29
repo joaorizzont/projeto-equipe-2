@@ -69,17 +69,9 @@ export const Events = () => {
         status = 'esgotado';
       }
 
-      // Lógica de cálculo de ocupação mockada igual à original
-      let hash = 0;
-      for (let i = 0; i < e.id.length; i++) {
-        hash = e.id.charCodeAt(i) + ((hash << 5) - hash);
-      }
-      const factor = Math.abs(hash % 100) / 100;
+      // Ocupação real: inscritos = capacidade total - estoque atual
       const maxStock = e.defaultStock;
-      let registered = Math.min(Math.round(maxStock * factor * 0.8), maxStock);
-      if (e.currentStock !== undefined && e.currentStock !== e.defaultStock) {
-        registered = Math.max(0, e.defaultStock - e.currentStock);
-      }
+      const registered = Math.max(0, maxStock - currentStock);
 
       // Formatação amigável de data e hora
       const dateStr = validAtDate.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });

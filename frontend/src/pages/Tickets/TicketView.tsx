@@ -1,21 +1,52 @@
+import { useEffect, useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { ArrowLeft, Download, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Download, ExternalLink, Loader2 } from 'lucide-react';
 import { DigitalTicket } from '../../components/DigitalTicket/DigitalTicket';
-import { mockUserTickets } from './MyTickets';
+import type { TicketData } from '../../components/DigitalTicket/DigitalTicket';
+import { ticketsApi } from '../../api/tickets/TicketsApi';
+import { toTicketData } from '../../api/tickets/ticketMapper';
 
 export const TicketView = () => {
     const { id } = useParams();
-    
-    // Procura o ingresso no mock
-    const ticket = mockUserTickets.find(t => t.id === id);
+    const [ticket, setTicket] = useState<TicketData | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [notFound, setNotFound] = useState(false);
 
-    if (!ticket) {
+    useEffect(() => {
+        const fetchTicket = async () => {
+            try {
+                setLoading(true);
+                const data = await ticketsApi.listMine();
+                const found = data.find((t) => t.id === id);
+                if (!found) {
+                    setNotFound(true);
+                    return;
+                }
+                setTicket(toTicketData(found));
+            } catch {
+                setNotFound(true);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchTicket();
+    }, [id]);
+
+    if (loading) {
+        return (
+            <div className="fixed inset-0 z-50 bg-slate-900 flex items-center justify-center">
+                <Loader2 className="animate-spin text-indigo-400 w-8 h-8" />
+            </div>
+        );
+    }
+
+    if (notFound || !ticket) {
         return <Navigate to="/meus-ingressos" replace />;
     }
 
     return (
         <div className="fixed inset-0 z-50 bg-slate-900 overflow-y-auto flex flex-col font-sans">
-            
+
             {/* Topbar escura */}
             <div className="w-full h-16 flex items-center justify-between px-6 bg-slate-900/80 backdrop-blur-md sticky top-0 z-10 shrink-0">
                 <Link to="/meus-ingressos" className="p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors">
@@ -27,7 +58,7 @@ export const TicketView = () => {
 
             {/* Container do Ingresso */}
             <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-8">
-                
+
                 {/* O Ticket Digital Componentizado */}
                 <DigitalTicket ticket={ticket} fullScreen={true} />
 

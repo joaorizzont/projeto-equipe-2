@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Calendar, Ticket } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import type { PublicEventResponse } from '../../api/response-types/PublicEventResponse';
+import { CheckoutModal } from '../CheckoutModal/CheckoutModal';
 
 interface EventCardProps {
   event: PublicEventResponse;
+  onPurchased?: () => void;
 }
 
-export const EventCard: React.FC<EventCardProps> = ({ event }) => {
+export const EventCard: React.FC<EventCardProps> = ({ event, onPurchased }) => {
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   // Format Date and Time using Intl.DateTimeFormat
   const formattedDate = React.useMemo(() => {
     try {
@@ -27,10 +30,15 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const handleBuy = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    toast.success(`Compra do ingresso para "${event.title}" realizada com sucesso!`);
+    if (event.currentStock <= 0) {
+      toast.error('Ingressos esgotados para este evento.');
+      return;
+    }
+    setCheckoutOpen(true);
   };
 
   return (
+    <>
     <div className="group bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(79,70,229,0.08)] hover:border-indigo-100 overflow-hidden transition-all duration-300 flex flex-col h-full">
       {/* Event Image or Placeholder */}
       <div className="h-48 w-full relative overflow-hidden bg-slate-100">
@@ -77,5 +85,17 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         </div>
       </div>
     </div>
+
+    {checkoutOpen && (
+      <CheckoutModal
+        event={event}
+        onClose={() => setCheckoutOpen(false)}
+        onSuccess={() => {
+          toast.success('Ingresso comprado! Veja em "Meus Ingressos".');
+          onPurchased?.();
+        }}
+      />
+    )}
+    </>
   );
 };

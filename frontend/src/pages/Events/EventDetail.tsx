@@ -19,15 +19,9 @@ export const EventDetail = () => {
             const data = await eventsApi.findById(id);
             setEvent(data);
 
-            // Calcula o número de inscritos mockado igual à listagem
-            let hash = 0;
-            for (let i = 0; i < data.id.length; i++) {
-                hash = data.id.charCodeAt(i) + ((hash << 5) - hash);
-            }
-            const factor = Math.abs(hash % 100) / 100;
-            const maxStock = data.defaultStock;
-            const registered = Math.min(Math.round(maxStock * factor * 0.8), maxStock);
-            setRegisteredCount(registered);
+            // Inscritos reais = capacidade total - estoque atual
+            const currentStock = data.currentStock ?? data.defaultStock;
+            setRegisteredCount(Math.max(0, data.defaultStock - currentStock));
 
         } catch (error) {
             toast.error('Erro ao carregar detalhes do evento.');
