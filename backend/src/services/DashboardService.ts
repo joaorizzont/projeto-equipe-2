@@ -40,10 +40,14 @@ export class DashboardService {
       .getRawOne<{ total: string }>();
     const revenue = Number(revenueRow?.total ?? 0);
 
-    // Vendas dos últimos 7 dias (agrupadas em JS para ser agnóstico de SGBD)
-    const since = new Date(now);
-    since.setDate(since.getDate() - 6);
-    since.setHours(0, 0, 0, 0);
+    // Vendas dos últimos 7 dias, agrupadas pelo dia local (BRT) e não por UTC,
+    // para a atribuição do dia bater com o fuso do usuário.
+    const TZ = "America/Sao_Paulo";
+    const dayMs = 24 * 60 * 60 * 1000;
+    const localDateKey = (d: Date) => d.toLocaleDateString("en-CA", { timeZone: TZ }); // YYYY-MM-DD
+
+    // Busca com folga (7 dias em UTC) para não perder ingressos nas bordas do dia local.
+    const since = new Date(now.getTime() - 7 * dayMs);
     const recentTickets = await this.ticketRepo
       .createQueryBuilder("ticket")
       .leftJoinAndSelect("ticket.event", "event")
@@ -53,13 +57,11 @@ export class DashboardService {
       .getMany();
 
     const buckets: Record<string, number> = {};
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(since);
-      d.setDate(since.getDate() + i);
-      buckets[d.toISOString().slice(0, 10)] = 0;
+    for (let i = 6; i >= 0; i--) {
+      buckets[localDateKey(new Date(now.getTime() - i * dayMs))] = 0;
     }
     for (const t of recentTickets) {
-      const key = new Date(t.createdAt).toISOString().slice(0, 10);
+      const key = localDateKey(new Date(t.createdAt));
       if (key in buckets) buckets[key]++;
     }
     const salesLast7Days = Object.entries(buckets).map(([date, count]) => ({ date, count }));
