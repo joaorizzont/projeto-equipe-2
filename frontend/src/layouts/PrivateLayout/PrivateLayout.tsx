@@ -6,11 +6,29 @@ import React from "react";
 
 export const PrivateLayout: React.FC = () => {
   // Verifica de fato se o usuário está logado usando o token salvo
-  const isAuthenticated = !!localStorage.getItem('@Patio:token'); 
+  const isAuthenticated = !!localStorage.getItem('@Patio:token');
 
   if (!isAuthenticated) {
     return <Navigate to="/" replace />;
   }
+
+  const user = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('@Patio:user') || '{}');
+    } catch {
+      return {} as Record<string, string>;
+    }
+  })();
+  const userName: string = user.nome || 'Usuário';
+  const userEmail: string = user.email || '';
+  const initials =
+    userName
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((s: string) => s[0])
+      .join('')
+      .toUpperCase() || 'U';
 
   const handleLogout = () => {
     authApi.logout();
@@ -80,11 +98,11 @@ export const PrivateLayout: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-indigo-600/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm">
-                AD
+                {initials}
               </div>
               <div className="min-w-0">
-                <span className="block text-sm font-bold text-slate-200 truncate">Administrador</span>
-                <span className="block text-xs text-slate-500 truncate">admin@inticket.com</span>
+                <span className="block text-sm font-bold text-slate-200 truncate">{userName}</span>
+                <span className="block text-xs text-slate-500 truncate">{userEmail}</span>
               </div>
             </div>
           </div>
@@ -97,9 +115,9 @@ export const PrivateLayout: React.FC = () => {
           <h2 className="text-lg font-semibold text-slate-800">Painel</h2>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
-              <span className="text-sm font-semibold text-slate-700">Olá, Admin</span>
+              <span className="text-sm font-semibold text-slate-700">Olá, {userName.split(' ')[0]}</span>
               <div className="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-[0_0_10px_rgba(79,70,229,0.2)]">
-                U
+                {initials}
               </div>
             </div>
             <div className="w-px h-6 bg-slate-100"></div>

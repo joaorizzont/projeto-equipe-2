@@ -10,19 +10,19 @@ export const PublicEvents: React.FC = () => {
   const [events, setEvents] = useState<PublicEventResponse[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        setLoading(true);
-        const data = await publicEventsApi.listAll();
-        setEvents(data);
-      } catch (error) {
-        toast.error('Erro ao carregar a lista de eventos.');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      const data = await publicEventsApi.listAll();
+      setEvents(data);
+    } catch (error) {
+      toast.error('Erro ao carregar a lista de eventos.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchEvents();
   }, []);
 
@@ -79,7 +79,7 @@ export const PublicEvents: React.FC = () => {
             {/* Responsive grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {events.map((event) => (
-                <EventCard key={event.id} event={event} />
+                <EventCard key={event.id} event={event} onPurchased={fetchEvents} />
               ))}
             </div>
           </div>

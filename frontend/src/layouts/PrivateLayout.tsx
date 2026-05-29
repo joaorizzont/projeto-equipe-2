@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 
 export const PrivateLayout: React.FC = () => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('@Patio:token');
 
   if (!token) {
     // Para fins de teste se o login não existir

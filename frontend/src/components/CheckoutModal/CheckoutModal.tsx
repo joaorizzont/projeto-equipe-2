@@ -19,7 +19,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({ event, onClose, on
   const navigate = useNavigate();
 
   const handleConfirm = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('@Patio:token');
     
     if (!token) {
       setToast({ message: 'Faça login para comprar ingressos', type: 'info' });

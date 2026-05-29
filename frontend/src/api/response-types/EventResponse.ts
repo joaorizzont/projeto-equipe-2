@@ -8,7 +8,7 @@ export interface EventResponse {
   createdAt: string;
   updatedAt: string;
   
-  // Metadados extras simulados localmente
+  // Campos opcionais persistidos no backend
   description?: string;
   location?: string;
   format?: string;

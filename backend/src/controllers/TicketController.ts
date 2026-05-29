@@ -22,6 +22,8 @@ export class TicketController {
           id: ticket.event.id,
           title: ticket.event.title,
           validAt: ticket.event.validAt,
+          endAt: ticket.event.endAt,
+          location: ticket.event.location,
           imageUrl: ticket.event.imageUrl
         } : null,
         createdAt: ticket.createdAt,
