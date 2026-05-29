@@ -6,6 +6,11 @@ interface CreateEventData {
   defaultStock: number;
   validAt: Date | string;
   imageUrl?: string;
+  endAt?: Date | string | null;
+  description?: string | null;
+  location?: string | null;
+  format?: string | null;
+  price?: number;
 }
 
 interface UpdateEventData {
@@ -13,6 +18,11 @@ interface UpdateEventData {
   defaultStock?: number;
   validAt?: Date | string;
   imageUrl?: string;
+  endAt?: Date | string | null;
+  description?: string | null;
+  location?: string | null;
+  format?: string | null;
+  price?: number;
 }
 
 export class EventService {
@@ -38,6 +48,7 @@ export class EventService {
     return this.eventRepository.save({
       ...data,
       validAt: validAtDate,
+      endAt: data.endAt ? new Date(data.endAt) : null,
       currentStock: data.defaultStock,
     });
   }
@@ -66,6 +77,7 @@ export class EventService {
       ...existingEvent,
       ...data,
       validAt: validAtDate,
+      endAt: data.endAt !== undefined ? (data.endAt ? new Date(data.endAt) : null) : existingEvent.endAt,
     });
   }
 

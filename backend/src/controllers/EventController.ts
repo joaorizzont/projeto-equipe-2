@@ -21,7 +21,7 @@ export class EventController {
 
   public create = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const { title, defaultStock, validAt, imageUrl } = req.body;
+      const { title, defaultStock, validAt, imageUrl, endAt, description, location, format, price } = req.body;
 
       if (!title || defaultStock === undefined || !validAt) {
         return res.status(400).json({
@@ -34,6 +34,11 @@ export class EventController {
         defaultStock: Number(defaultStock),
         validAt,
         imageUrl,
+        endAt,
+        description,
+        location,
+        format,
+        price: price !== undefined ? Number(price) : undefined,
       });
 
       return res.status(201).json(event);
@@ -51,6 +56,9 @@ export class EventController {
 
       if (updateData.defaultStock !== undefined) {
         updateData.defaultStock = Number(updateData.defaultStock);
+      }
+      if (updateData.price !== undefined) {
+        updateData.price = Number(updateData.price);
       }
 
       const updatedEvent = await this.eventService.update(id as string, updateData);
