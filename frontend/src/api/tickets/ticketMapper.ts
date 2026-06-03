@@ -32,6 +32,8 @@ export const toTicketData = (t: MyTicketResponse): TicketData => {
     eventLocation: t.event?.location ?? 'Local a definir',
     ticketType: 'Ingresso',
     userName: getUserName(),
+    ticketCode: t.ticketCode,
+    eventImageUrl: t.event?.imageUrl ?? undefined,
     // Status desconhecido cai em 'expired' (conservador): nunca exibir como válido para entrada.
     status: statusMap[t.status] ?? 'expired',
   };
